@@ -3,51 +3,29 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Health : MonoBehaviour, IDamageable
+public class Health : MonoBehaviour
 {
     private const int maxHP = 100;
-    private const int damage = 10;
-
     private const int dieHp = 0;
-    private int hp;
+    private int currentHp;
 
-    private bool isAlive;
     // Start is called before the first frame update
     void Start()
     {
-        hp = maxHP;
+        currentHp = maxHP;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TakeDamage(int damage)
     {
-        
+        currentHp -= damage;
+        Debug.Log(currentHp);
+
+        if (currentHp <= dieHp)
+            Die();
     }
 
-    public void OnCollisionEnter(Collision collision)
+    public void Die()
     {
-        if(collision == null) 
-            return;
-
-    }
-
-    public void OnDamage(int damage, Vector3 hitPoint, Vector3 hitNormal)
-    {
-        hp -= damage;
-
-        if (hp < dieHp)
-        {
-            hp = dieHp;
-
-            isAlive = true;
-        }
-    }
-
-    public void Alive()
-    {
-        if(isAlive)
-        {
-            Destroy(gameObject);
-        }
+        Destroy(gameObject);
     }
 }
