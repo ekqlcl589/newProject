@@ -6,21 +6,13 @@ using UnityEngine.AI;
 public class MoveMent : MonoBehaviour
 {
     // Start is called before the first frame update
-    public Rigidbody rigidbody;
 
-    public GameObject enemy;
+    public Transform target;
     private const float moveSpeed = 1f;
     private const float distance = 1f;
 
-    Vector3 vector = Vector3.zero;
-    Vector3 vLook;
-    private void Awake()
-    {
-        rigidbody = GetComponent<Rigidbody>();
-    }
     void Start()
     {
-        //rigidbody = new Rigidbody(); // 컴포넌트로 받으면 또 그 컴포넌트가 없으면 작동이 안 되니까 리지드 바디를 생성해서 사용하거나 (c++), 상속받아서 사용한다 
 
     }
 
@@ -32,42 +24,28 @@ public class MoveMent : MonoBehaviour
 
     public void Move()
     {
-        //if (navMeshAgent == null)
-        //    return;
-
-        //navMeshAgent.speed = moveSpeed;
-        if(Input.GetKeyDown(KeyCode.W)) 
+        if(transform != null)
         {
-            vector = enemy.transform.position;
+            Vector3 direction = target.position - transform.position;
+            direction.y = 0f; // 0 고정
 
-            Vector3 moveDist = moveSpeed * transform.forward * moveSpeed * Time.deltaTime;
+            Quaternion rotation = Quaternion.LookRotation(direction.normalized);
+            transform.rotation = rotation;
 
-            vLook = moveDist - vector;
+            float distanceToPosition = Vector3.Distance(transform.position, target.position);
 
-            Quaternion rot = Quaternion.LookRotation(vLook.normalized);
+            if(distanceToPosition > distance)
+            {
+                Vector3 move = direction.normalized * moveSpeed * Time.deltaTime;
+                transform.position += move;
+            }
 
-            transform.rotation = rot;
+            else
+            {
 
-            rigidbody.MovePosition(rigidbody.position + vLook.normalized * -1f); // 임시값 변수로 만들어서 집어넣기 
+            }
         }
-
     }
 
-    public void check()
-    {
-
-
-    }
-    //public void StopMove()
-    //{
-    //    if(상대 큐브가 없다면)
-    //            return;
-
-    //    if(상대방 큐브의 거리와 나의 거리가 <= distance)
-    //    {
-    //        navMeshAgent.speed = 0f;
-    //    }
-        
-    //}
 
 }
