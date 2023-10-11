@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface IDamageable
 {
-    void OnDamage(int damage, Vector3 hitPoint, Vector3 hitNormal);
+    public void OnDamage(float damage);
 
 }

@@ -3,30 +3,33 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Health : MonoBehaviour
+public class Health : MonoBehaviour, IDamageable
 {
-    private const float maxHP = 100f;
-    private const float dieHp = 0f;
     private float currentHp;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        currentHp = maxHP;
+        currentHp = Constant.MAX_HP;
     }
 
-    public void TakeDamage(float damage)
+    public virtual void OnDamage(float damage)
     {
-        if (currentHp <= dieHp)
-            Die();
 
         currentHp -= damage;
         Debug.Log(currentHp);
+        if (currentHp <= Constant.DIE_HP)
+            Die();
+    }
+
+    private void Die()
+    {
+        //Destroy(gameObject);
 
     }
 
-    public void Die()
+    private void OnCollisionEnter(Collision collision)
     {
-        Destroy(gameObject);
+        OnDamage(Constant.DAMAGE);
     }
 }

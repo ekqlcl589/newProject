@@ -20,7 +20,7 @@ public class MoveMent : MonoBehaviour
             // 방향 벡터
             Vector3 direction = target.position - transform.position;
 
-            direction.y = Constant.ZERO_point;
+            direction.y = Constant.ZERO_POINT;
 
             // 타겟을 향해 회전
             Quaternion rotation = Quaternion.LookRotation(direction.normalized);
