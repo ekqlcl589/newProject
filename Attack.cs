@@ -10,21 +10,29 @@ public class Attack : MonoBehaviour
 
     private Health targetHealth;
 
-    private Bullet bullet;
-    private void Awake()
-    {
-    }
+    public Bullet bullet;
+
+    private IDamageable damageableTarget;
+
     private void Start()
     {
-        bullet = GetComponent<Bullet>(); // 이러면 bullet 없이 Attack 만 독단적으로 사용할 수 없음, 컴포넌트화 x
-        targetHealth = GetComponent<Health>();        
+        damageableTarget = GetComponent<IDamageable>();
+        var health = GetComponent<Health>();
+        if (health != null)
+        {
+            health.OnTakeAttack += HandleTakeAttack;
+        }
+    }
+    private void Awake()
+    {
     }
     // Update is called once per frame
     void Update()
     {
         if(Time.time > nextAttackTime && targetHealth != null)
         {
-            bullet.TakeAttack();
+            damageableTarget.OnDamage(Constant.DAMAGE);
+            //bullet.TakeAttack();
 
             nextAttackTime = Time.time + Constant.ATTACK_COLLTIME;
         }
@@ -40,6 +48,14 @@ public class Attack : MonoBehaviour
 
     }
 
+    private void HandleTakeAttack()
+    {
+        if (Time.time > nextAttackTime)
+        {
+            // 공격 로직
+            nextAttackTime = Time.time + Constant.ATTACK_COLLTIME;
+        }
+    }
     // 콜리전과 충돌 시 타겟을 지정
     //private void OnCollisionEnter(Collision collision)
     //{

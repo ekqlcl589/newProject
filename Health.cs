@@ -1,12 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEngine.Events;
 using UnityEngine;
 
 public class Health : MonoBehaviour, IDamageable
 {
     private float currentHp;
 
+    public System.Action OnTakeAttack;
+
+    public void TakeAttack()
+    {
+        // 처리 로직
+        OnTakeAttack?.Invoke();
+    }
     // Start is called before the first frame update
     private void Start()
     {

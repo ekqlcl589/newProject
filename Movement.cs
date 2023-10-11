@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class MoveMent : MonoBehaviour
+public class Movement : MonoBehaviour
 {
     public Transform target;
 

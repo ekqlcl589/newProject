@@ -2,10 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class Bullet : MonoBehaviour, IDamageable
 {
     public Transform bulletPoint;
     public GameObject bulletPrefab;
+
+    public void OnDamage(float damage)
+    {
+        //throw new System.NotImplementedException();
+    }
 
     public void TakeAttack()
     {
