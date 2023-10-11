@@ -8,9 +8,9 @@ public class Attack : MonoBehaviour
 
     private const float attackCoolTime = 1f;
 
-    private const float colliderRange = 1f;
+    private float nextAttackTime;
 
-    private float nextAttack;
+    private Health targetHealth;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,28 +20,32 @@ public class Attack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Time.time > nextAttack)
+        if(Time.time > nextAttackTime && targetHealth != null)
         {
             Attacks();
         }
     }
-    
+
     void Attacks()
     {
-        Collider[] collider = Physics.OverlapSphere(transform.position, colliderRange); // 1 범위 충돌체 탐색
+        targetHealth.TakeDamage(damage);
 
-        for (int i = 0; i < collider.Length; i++) // 타겟의 콜라이더에 부딪히면 공격을 한다 -> 타겟의 콜라이더를 찾는다 
-        {
-            Health target = collider[i].GetComponent<Health>();
-
-
-            if (target != null && gameObject != null) // 찾은 콜라이더가 null이 아니면 공격
-            {
-                target.TakeDamage(damage);
-            }
-            //다음 공격을 위한 시간 설정
-        }
-        nextAttack = attackCoolTime + Time.time;
+        nextAttackTime = Time.time + attackCoolTime;
 
     }
+
+    
+    // 콜리전과 충돌 시 타겟을 지정
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.collider.CompareTag("Cube") && collision.gameObject != gameObject)
+            targetHealth = GetComponent<Health>();
+    }
+
+   
+    private void OnCollisionExit(Collision collision)
+    {
+        targetHealth = null;
+    }
+
 }

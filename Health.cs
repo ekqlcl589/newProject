@@ -17,11 +17,12 @@ public class Health : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        if (currentHp <= dieHp)
+            Die();
+
         currentHp -= damage;
         Debug.Log(currentHp);
 
-        if (currentHp <= dieHp)
-            Die();
     }
 
     public void Die()
