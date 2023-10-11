@@ -9,7 +9,7 @@ public class MoveMent : MonoBehaviour
 
     public Transform target;
     private const float moveSpeed = 1f;
-    private const float distance = 1f;
+    private const float distance = 3f;
 
     void Start()
     {
@@ -29,17 +29,18 @@ public class MoveMent : MonoBehaviour
             Vector3 direction = target.position - transform.position;
             direction.y = 0f; // 0 고정
 
+            // 타겟을 향해 회전
             Quaternion rotation = Quaternion.LookRotation(direction.normalized);
             transform.rotation = rotation;
 
             float distanceToPosition = Vector3.Distance(transform.position, target.position);
 
+            // 타겟과의 거리가 distance 보다 크다면 이동 
             if(distanceToPosition > distance)
             {
                 Vector3 move = direction.normalized * moveSpeed * Time.deltaTime;
                 transform.position += move;
             }
-
             else
             {
 

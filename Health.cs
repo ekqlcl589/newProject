@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-    private const int maxHP = 100;
-    private const int dieHp = 0;
-    private int currentHp;
+    private const float maxHP = 100f;
+    private const float dieHp = 0f;
+    private float currentHp;
 
     // Start is called before the first frame update
     void Start()
@@ -15,7 +15,7 @@ public class Health : MonoBehaviour
         currentHp = maxHP;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         currentHp -= damage;
         Debug.Log(currentHp);
