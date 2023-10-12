@@ -35,20 +35,6 @@ public class Movement : MonoBehaviour
                 Vector3 move = direction.normalized * Constant.MOVE_SPEED * Time.deltaTime;
                 transform.position += move;
             }
-            else
-            {
-                //공격
-            }
         }
     }
-
-    //다른 타겟으로 변경할 때 사용할 함수 
-    public void SetTarget(Transform newTarget)
-    {
-        if (newTarget == null && gameObject == null)
-            return;
-
-        target = newTarget;
-    }
-
 }
