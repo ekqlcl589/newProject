@@ -24,9 +24,9 @@ public class Health : MonoBehaviour, IDamageable
     }
 
     private void Die()
-
-
     {
         Destroy(gameObject);
     }
 }
+
+// 생명 관련 기능을 수행하는 컴포넌트

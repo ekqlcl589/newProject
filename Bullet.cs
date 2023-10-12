@@ -4,26 +4,40 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    private Attack attack;
+    public Rigidbody rigidbody;
+    private Vector3 move = new Vector3(1f, 0f, 0f);
 
+    public System.Action onDie;
     private void Start()
     {
-        attack = FindObjectOfType<Attack>();
-
+        rigidbody = GetComponent<Rigidbody>();
     }
 
     private void Update()
     {
-        
+        if(rigidbody != null) 
+        {
+            rigidbody.AddForce(move * Constant.BULLET_POWER * Time.time);
+        }
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if(attack != null)
-            attack.OnTakeAttack();
+        IDamageable damageableTarget = collision.gameObject.GetComponent<IDamageable>();
+        if (damageableTarget != null)
+        {
+            damageableTarget.OnDamage(Constant.DAMAGE);
+        }
+
+        Debug.Log(collision.gameObject);
 
         Debug.Log("ªË¡¶");
-       Destroy(gameObject);
+        Die();
 
     }
 
+    private void Die()
+    {
+        this.onDie();
+        Destroy(gameObject);
+    }
 }

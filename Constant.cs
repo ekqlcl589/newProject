@@ -9,6 +9,8 @@ public class Constant
 
     public const float MOVE_SPEED = 1f;
     public const float DISTANCE = 3f;
+
+    public const float CREATE_TIME = 2f;
     public const float BULLET_DISTANCE = 10f;
 
     public const float ZERO = 0f;
@@ -19,4 +21,5 @@ public class Constant
 
     public const float ATTACK_COLLTIME = 1f;
 
+    
 }

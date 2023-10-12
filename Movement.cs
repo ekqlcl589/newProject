@@ -5,10 +5,10 @@ using UnityEngine.AI;
 
 public class Movement : MonoBehaviour
 {
-    public Transform target;
+    public GameObject target;
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         Move();
     }
@@ -18,7 +18,7 @@ public class Movement : MonoBehaviour
         if (target != null)
         {
             // 방향 벡터
-            Vector3 direction = target.position - transform.position;
+            Vector3 direction = target.transform.position - transform.position;
 
             direction.y = Constant.ZERO_POINT;
 
@@ -27,7 +27,7 @@ public class Movement : MonoBehaviour
             transform.rotation = rotation;
 
             //타겟과의 거리 계산
-            float distanceToPosition = Vector3.Distance(transform.position, target.position);
+            float distanceToPosition = Vector3.Distance(transform.position, target.transform.position);
 
             // 타겟과의 거리가 distance 보다 크다면 이동 
             if (distanceToPosition > Constant.DISTANCE)
@@ -36,5 +36,7 @@ public class Movement : MonoBehaviour
                 transform.position += move;
             }
         }
+        else
+            return;
     }
 }
