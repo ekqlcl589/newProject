@@ -34,11 +34,11 @@ public class Bullet : MonoBehaviour, IDamageable
     {
         //Attack attack = GetComponent<Attack>();
         //attack.TakeAttack();
-        attack.onTakeDamageable += Test;
+        attack.OnTakeAttack.Invoke();
 
         Debug.Log("ªË¡¶");
+       //Destroy(gameObject);
 
-       // Destroy(gameObject);
     }
 
     private void Test()
