@@ -5,19 +5,27 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public Rigidbody rigidbody;
-    private Vector3 move = new Vector3(1f, 0f, 0f);
+    // 유도탄이 아니라 x 방향으로만 발사
+    private Vector3 move = Vector3.right;
+    private Vector3 startPosition;
+    public System.Action onDelete; // 이름
 
-    public System.Action onDie;
-    private void Start()
+    private void Awake()
     {
         rigidbody = GetComponent<Rigidbody>();
     }
 
+    private void Start()
+    {
+        startPosition = transform.position;
+    }
     private void Update()
     {
-        if(rigidbody != null) 
+        if (rigidbody != null)
         {
-            rigidbody.AddForce(move * Constant.BULLET_POWER * Time.time);
+            rigidbody.AddForce(move * Constant.BULLET_POWER);
+
+            DeleteByDistance();
         }
     }
     private void OnCollisionEnter(Collision collision)
@@ -25,19 +33,27 @@ public class Bullet : MonoBehaviour
         IDamageable damageableTarget = collision.gameObject.GetComponent<IDamageable>();
         if (damageableTarget != null)
         {
-            damageableTarget.OnDamage(Constant.DAMAGE);
+            damageableTarget.OnDamage(Constant.DAMAGE * 10f);
         }
 
-        Debug.Log(collision.gameObject);
-
-        Debug.Log("삭제");
-        Die();
-
+        Delete();
     }
 
-    private void Die()
+    private void Delete()
     {
-        this.onDie();
+        this.onDelete();
+
         Destroy(gameObject);
+    }
+
+    private void DeleteByDistance()
+    {
+        float distanceToStartPosition = Vector3.Distance(startPosition, rigidbody.position);
+
+        if (distanceToStartPosition > Constant.BULLET_DELETE_DISTANCE)
+        {
+            Delete();
+        }
+
     }
 }

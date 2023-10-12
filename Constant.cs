@@ -12,14 +12,15 @@ public class Constant
 
     public const float CREATE_TIME = 2f;
     public const float BULLET_DISTANCE = 10f;
+    public const float BULLET_DELETE_DISTANCE = 15f;
+
+    public const float FIND_TARGET = 5f;
 
     public const float ZERO = 0f;
     public const float ZERO_POINT = 0f;
-
+    public const float ONE_POINT = 1f;
     public const float DAMAGE = 10f;
     public const float BULLET_POWER = 1f;
 
-    public const float ATTACK_COLLTIME = 1f;
-
-    
+    public const float ATTACK_COLLTIME = 3f; 
 }

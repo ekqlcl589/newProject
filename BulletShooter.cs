@@ -10,14 +10,13 @@ public class BulletShooter : MonoBehaviour
     // 생성할 공 원본 프리팹
     public Bullet bulletPrefab;
 
-    private float nextShootTime;
+    private float nextShootTime = Constant.ZERO;
 
     private List<Bullet> bulletList = new List<Bullet>();
 
     // Start is called before the first frame update
     private void Start()
     {
-        nextShootTime = Constant.ZERO;
     }
 
     // Update is called once per frame
@@ -28,7 +27,7 @@ public class BulletShooter : MonoBehaviour
 
     private void shot()
     {
-        if (bulletList.Count <= Constant.ZERO && Time.time > nextShootTime)
+        if (bulletList.Count == Constant.ZERO && Time.time > nextShootTime) // 기호 수정 0보다 작아질 수 없는데 왜 <=를 썼냐
             CreateBullet();
     }
 
@@ -40,7 +39,9 @@ public class BulletShooter : MonoBehaviour
 
         nextShootTime = Time.time + Constant.ATTACK_COLLTIME;
 
-        Bullet.onDie += () => bulletList.Remove(Bullet);
+        float distanceToPoint = Vector3.Distance(bulletPoint.position, Bullet.transform.position);
+
+        Bullet.onDelete += () => bulletList.Remove(Bullet);
     }
 }
 

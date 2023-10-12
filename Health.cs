@@ -6,21 +6,21 @@ using UnityEngine;
 
 public class Health : MonoBehaviour, IDamageable
 {
-    private float currentHp;
+    private float currentHp = Constant.MAX_HP;
 
     // Start is called before the first frame update
     private void Start()
     {
-        currentHp = Constant.MAX_HP;
+
     }
 
-    public virtual void OnDamage(float damage)
+    public virtual void OnDamage(float damage) // 셋으로 빼...면 IDamageable 로 호출할 수가 없는데..?
     {
         if (currentHp <= Constant.DIE_HP)
             Die();
 
         currentHp -= damage;
-        Debug.Log(currentHp);
+        //Debug.Log(currentHp);
     }
 
     private void Die()
