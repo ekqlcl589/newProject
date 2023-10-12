@@ -8,13 +8,6 @@ public class Health : MonoBehaviour, IDamageable
 {
     private float currentHp;
 
-    public System.Action OnTakeAttack;
-
-    public void TakeAttack()
-    {
-        // 처리 로직
-        OnTakeAttack?.Invoke();
-    }
     // Start is called before the first frame update
     private void Start()
     {
@@ -23,21 +16,16 @@ public class Health : MonoBehaviour, IDamageable
 
     public virtual void OnDamage(float damage)
     {
+        if (currentHp <= Constant.DIE_HP)
+            Die();
 
         currentHp -= damage;
         Debug.Log(currentHp);
-        if (currentHp <= Constant.DIE_HP)
-            Die();
     }
 
     private void Die()
     {
-        //Destroy(gameObject);
+        Destroy(gameObject);
 
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        OnDamage(Constant.DAMAGE);
     }
 }

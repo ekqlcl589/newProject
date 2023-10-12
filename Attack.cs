@@ -2,86 +2,53 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditorInternal;
 using UnityEngine;
+using static Attack;
 
 public class Attack : MonoBehaviour
 {
 
     private float nextAttackTime;
 
-    private Health targetHealth;
-
-    public Bullet bullet;
 
     private IDamageable damageableTarget;
+
+    public System.Action OnTakeAttack;
+
+    public delegate void OnTakeDamageable();
+    public OnTakeDamageable onTakeDamageable;
+
+    public void TakeAttack()
+    {
+        // 처리 로직
+        damageableTarget.OnDamage(Constant.DAMAGE);
+
+        OnTakeAttack?.Invoke();
+    }
 
     private void Start()
     {
         damageableTarget = GetComponent<IDamageable>();
-        var health = GetComponent<Health>();
-        if (health != null)
-        {
-            health.OnTakeAttack += HandleTakeAttack;
-        }
+
+        OnTakeAttack = () => { HandleTakeAttack(); };
     }
-    private void Awake()
-    {
-    }
+
     // Update is called once per frame
     void Update()
     {
-        if(Time.time > nextAttackTime && targetHealth != null)
-        {
-            damageableTarget.OnDamage(Constant.DAMAGE);
-            //bullet.TakeAttack();
-
-            nextAttackTime = Time.time + Constant.ATTACK_COLLTIME;
-        }
-    }
-
-    private void Attacks()
-    { 
-        if(targetHealth != null)
-        {
-            targetHealth.OnDamage(Constant.DAMAGE);
-            nextAttackTime = Time.time + Constant.ATTACK_COLLTIME;
-        }
-
+        //TakeAttack();
+        //HandleTakeAttack();
     }
 
     private void HandleTakeAttack()
     {
-        if (Time.time > nextAttackTime)
-        {
+            //OnTakeAttack.Invoke();
+        //if (Time.time > nextAttackTime)
+        //{
+            damageableTarget.OnDamage(Constant.DAMAGE);
+        onTakeDamageable.Invoke();
             // 공격 로직
             nextAttackTime = Time.time + Constant.ATTACK_COLLTIME;
-        }
+         //   
+        //}
     }
-    // 콜리전과 충돌 시 타겟을 지정
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    //if(collision.collider.CompareTag("Cube") && collision.gameObject != gameObject)
-    //    //{
-    //    //        targetHealth = GetComponent<Health>();
-    //    //
-    //    //    //if(targetHealth != null)
-    //    //    //    targetHealth.TakeDamage(damage);// = GetComponent<Health>();
-    //    //    //targetHealth.OnDamage(damage);
-    //    //    Debug.Log("충돌");
-    //    //
-    //    //}
-    //    //Health health = collision.collider.GetComponent<Health>();
-    //    //
-    //    //if(health != null) 
-    //    //{
-    //    //    health.OnDamage(damage);
-    //    //}
-    //    Destroy(gameObject);
-    //}
-    //
-    //
-    //private void OnCollisionExit(Collision collision)
-    //{
-    //    targetHealth = null;
-    //}
-
 }

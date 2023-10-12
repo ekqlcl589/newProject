@@ -8,7 +8,7 @@ public class Constant
     public const float DIE_HP = 0f;
 
     public const float MOVE_SPEED = 1f;
-    public const float DISTANCE = 1f;
+    public const float DISTANCE = 3f;
     public const float BULLET_DISTANCE = 10f;
 
     public const float ZERO = 0f;
