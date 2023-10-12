@@ -13,13 +13,6 @@ public class Attack : MonoBehaviour
 
     public System.Action OnTakeAttack;
 
-    public void TakeAttack()
-    {
-        // 贸府 肺流
-        damageableTarget.OnDamage(Constant.DAMAGE);
-
-        OnTakeAttack?.Invoke();
-    }
 
     private void Start()
     {
@@ -31,17 +24,17 @@ public class Attack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //TakeAttack();
-        //HandleTakeAttack();
+
     }
 
     private void HandleTakeAttack()
     {
-            //OnTakeAttack.Invoke();
         //if (Time.time > nextAttackTime)
         //{
+        if (damageableTarget != null)
             damageableTarget.OnDamage(Constant.DAMAGE);
-
+        else
+            return;
             // 傍拜 肺流
             nextAttackTime = Time.time + Constant.ATTACK_COLLTIME;
          //   
