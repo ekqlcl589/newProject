@@ -4,28 +4,27 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public Rigidbody rigidbody;
+    public Rigidbody rigidBody;
 
-    private Vector3 move = Vector3.right;
     private Vector3 startPosition;
     public System.Action onDelete; // ¿Ã∏ß
 
     private void Awake()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        rigidBody = GetComponent<Rigidbody>();
     }
 
     private void Start()
     {
         startPosition = transform.position;
+
+        StartCoroutine(DeleteByDistance());
     }
     private void Update()
     {
-        if (rigidbody != null)
+        if (rigidBody != null)
         {
-            rigidbody.AddForce(move * Constant.BULLET_POWER);
-
-            DeleteByDistance();
+            rigidBody.AddForce(transform.forward * Constant.BULLET_POWER);
         }
     }
     private void OnCollisionEnter(Collision collision)
@@ -33,7 +32,7 @@ public class Bullet : MonoBehaviour
         Health health = collision.gameObject.GetComponent<Health>();
         if (health != null) 
         {
-            health.CurrentHp -= Constant.DAMAGE;
+            health.CurrentHp = Constant.DAMAGE;
         }
 
         Delete();
@@ -46,14 +45,18 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void DeleteByDistance()
+    IEnumerator DeleteByDistance()
     {
-        float distanceToStartPosition = Vector3.Distance(startPosition, rigidbody.position);
-
-        if (distanceToStartPosition > Constant.BULLET_DELETE_DISTANCE)
+        if(rigidBody != null) 
         {
-            Delete();
-        }
+            yield return new WaitForSeconds(Constant.BULLET_DELETE_TIME);
 
+            float distanceToStartPosition = Vector3.Distance(startPosition, rigidBody.position);
+
+            if (distanceToStartPosition > Constant.BULLET_DELETE_DISTANCE)
+            {
+                Delete();
+            }
+        }
     }
 }

@@ -8,21 +8,24 @@ public class Health : MonoBehaviour
 { 
     private float currentHp = Constant.MAX_HP;
 
-    public float CurrentHp
+    public float CurrentHp // 변수 자체를 건드리는 게 아니라 함수를 통해 접근?
     {
         get { return currentHp; }
         set 
         {
-            if(currentHp > Constant.DIE_HP)
-            {
-                currentHp = value;
-
-                if (currentHp <= Constant.DIE_HP)
-                    Die();
-            }
+            OnDamage(value);
         }
     }
 
+    private void OnDamage(float damage)
+    {
+        if (currentHp <= Constant.DIE_HP)
+            Die();
+
+        currentHp -= damage;
+
+        Debug.Log(currentHp);
+    }
     private void Die()
     {
         Destroy(gameObject);
