@@ -14,11 +14,6 @@ public class BulletShooter : MonoBehaviour
 
     private List<Bullet> bulletList = new List<Bullet>();
 
-    // Start is called before the first frame update
-    private void Start()
-    {
-    }
-
     // Update is called once per frame
     private void Update()
     {
@@ -27,7 +22,7 @@ public class BulletShooter : MonoBehaviour
 
     private void shot()
     {
-        if (bulletList.Count == Constant.ZERO && Time.time > nextShootTime) // 기호 수정 0보다 작아질 수 없는데 왜 <=를 썼냐
+        if (bulletList.Count == Constant.ZERO && Time.time > nextShootTime)
             CreateBullet();
     }
 
@@ -37,9 +32,7 @@ public class BulletShooter : MonoBehaviour
 
         bulletList.Add(Bullet);
 
-        nextShootTime = Time.time + Constant.ATTACK_COLLTIME;
-
-        float distanceToPoint = Vector3.Distance(bulletPoint.position, Bullet.transform.position);
+        nextShootTime = Time.deltaTime + Constant.ATTACK_COLLTIME;
 
         Bullet.onDelete += () => bulletList.Remove(Bullet);
     }

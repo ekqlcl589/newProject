@@ -7,12 +7,21 @@ public class Movement : MonoBehaviour
 {
     public GameObject target;
 
+    private Rigidbody rb;
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+
+    }
+
     // Update is called once per frame
     private void Update()
     {
         Move();
 
-        ChangeTarget();
+        StartCoroutine(Set_RandomMove());
+
     }
 
     private void Move()
@@ -39,26 +48,34 @@ public class Movement : MonoBehaviour
                 transform.position += move;
             }
         }
-        else
-        {
-            Vector3 randomMove = new Vector3(Random.Range(-Constant.ONE_POINT, Constant.ONE_POINT), Constant.ZERO_POINT, Random.Range(-Constant.ONE_POINT, Constant.ONE_POINT));
-            transform.position += randomMove.normalized * Time.deltaTime;
-        }
     }
 
-    private void ChangeTarget()
+    private void OnTriggerStay(Collider other) // 같은 코드를 두 번 쓸 필요가 있을까 그냥 스테이만 가지고 있어도 되지 않을까 
+    {
+        if (target == null)
+        {
+            Health damageableTarget = other.GetComponent<Health>();
+
+            if (damageableTarget != null)
+                target = damageableTarget.gameObject;
+        }
+
+
+    }
+
+    IEnumerator Set_RandomMove()
     {
         if(target == null)
         {
-            Collider[] collider = Physics.OverlapSphere(transform.position, Constant.FIND_TARGET);
+            Vector3 randomDisrtection = Random.insideUnitSphere * 5f;
+            float randomForce = Random.Range(Constant.MOVE_SPEED, Constant.FIND_TARGET);
 
-            for(int i = 0; i < collider.Length; i++) 
-            {
-                Health damageableTarget = collider[i].GetComponent<Health>();
+            Vector3 randomMove = new Vector3(randomForce, Constant.ZERO_POINT, randomForce); // 랜덤 무브 여기도 좀 다르게 해야하지 않을까 업데이트에서 계속 도니까 덜덜 떨리기만 하는데 
 
-                if(damageableTarget != null && damageableTarget != this && collider[i].CompareTag("Target"))
-                    target = damageableTarget.gameObject;
-            }
+            rb.AddForce(randomForce * randomDisrtection);
+
+            yield return new WaitForSeconds(5f);
+
         }
     }
 }

@@ -4,23 +4,23 @@ using Unity.VisualScripting;
 using UnityEngine.Events;
 using UnityEngine;
 
-public class Health : MonoBehaviour, IDamageable
-{
+public class Health : MonoBehaviour
+{ 
     private float currentHp = Constant.MAX_HP;
 
-    // Start is called before the first frame update
-    private void Start()
+    public float CurrentHp
     {
+        get { return currentHp; }
+        set 
+        {
+            if(currentHp > Constant.DIE_HP)
+            {
+                currentHp = value;
 
-    }
-
-    public virtual void OnDamage(float damage) // 셋으로 빼...면 IDamageable 로 호출할 수가 없는데..?
-    {
-        if (currentHp <= Constant.DIE_HP)
-            Die();
-
-        currentHp -= damage;
-        //Debug.Log(currentHp);
+                if (currentHp <= Constant.DIE_HP)
+                    Die();
+            }
+        }
     }
 
     private void Die()

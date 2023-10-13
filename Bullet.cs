@@ -5,7 +5,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public Rigidbody rigidbody;
-    // 유도탄이 아니라 x 방향으로만 발사
+
     private Vector3 move = Vector3.right;
     private Vector3 startPosition;
     public System.Action onDelete; // 이름
@@ -30,10 +30,10 @@ public class Bullet : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        IDamageable damageableTarget = collision.gameObject.GetComponent<IDamageable>();
-        if (damageableTarget != null)
+        Health health = collision.gameObject.GetComponent<Health>();
+        if (health != null) 
         {
-            damageableTarget.OnDamage(Constant.DAMAGE * 10f);
+            health.CurrentHp -= Constant.DAMAGE;
         }
 
         Delete();
