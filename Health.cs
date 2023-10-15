@@ -24,7 +24,6 @@ public class Health : MonoBehaviour
 
         currentHp -= damage;
 
-        Debug.Log(currentHp);
     }
     private void Die()
     {

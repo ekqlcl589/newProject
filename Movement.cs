@@ -7,7 +7,7 @@ public class Movement : MonoBehaviour
 {
     private GameObject target;
 
-    private Health temporaryObject;
+    private List<Health> potentialTargets = new List<Health>();
 
     private Rigidbody rigidBody;
 
@@ -52,35 +52,48 @@ public class Movement : MonoBehaviour
     // 트리거에 접촉한 순간 정보를 저장해서 가지고 있는다 
     private void OnTriggerEnter(Collider other)
     {
-        if(target == null)
-        {
-            Health damageableTarget = other.GetComponent<Health>(); // 적이 진짜 여러 개라면 들어온 순서대로 저장해야 하는데 그럼 배열로 받아서 저장했다가 
-            // 첫 번째 배열 부터 순서대로 exit 에서 불러와야 한다.
+        Health damageableTarget = other.GetComponent<Health>();
 
-            if(damageableTarget != null )
-                target = damageableTarget.gameObject;
-        }
-        else if( target != null && temporaryObject == null)
+        if (damageableTarget != null)
         {
-            // 타겟은 이미 정해져 있고 임시 객체만 비어 있다면
-            temporaryObject = other.GetComponent<Health>();
+            potentialTargets.Add(damageableTarget);
+
+            // 만약 현재 타겟이 null이라면 첫 번째 오브젝트를 타겟으로 지정
+            if (target == null)
+            {
+                target = damageableTarget.gameObject;
+            }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        // 그러다가 target 이 죽어서 null 이 되고 임시로 저장된 temp 객체가 null 이 아니라면?
-        if (target == null && temporaryObject != null)
-        {
-            // 새로운 타겟은 temp 가 되고 
-            target = temporaryObject.gameObject;
+        Health damageableTarget = other.GetComponent<Health>();
 
-            // 임시 객체였던 temp 는 null 로 만들어 준다
-            temporaryObject = null;
+        if (damageableTarget != null)
+        {
+            potentialTargets.Remove(damageableTarget);
+
+            // 만약 현재 타겟이 이 오브젝트인 경우
+            if (target == damageableTarget.gameObject)
+            {
+                // 다른 오브젝트가 트리거 안에 있으면 그 중 하나를 새로운 타겟으로 지정
+                if (potentialTargets.Count > Constant.COUNT_ZERO)
+                {
+                    //for(int i = 0; i <potentialTargets.Count; i++)
+                        target = potentialTargets[0].gameObject;
+                }
+                else
+                {
+                    // 다른 오브젝트가 없으면 타겟을 null로 설정
+                    target = null;
+                }
+            }
         }
     }
     IEnumerator Set_RandomMove()
-    { // 수정 해야 함
+    {
+        //while 문으로 바꿔서 target == null 이면 코루틴 수행 != 이면 종료
         while(target == null) 
         {
             Vector3 randomDirection = Random.insideUnitSphere * Constant.INSIDEUNITSPHERE;
