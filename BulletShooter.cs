@@ -14,33 +14,15 @@ public class BulletShooter : MonoBehaviour
 
     private List<Bullet> bulletList = new List<Bullet>();
 
-    private void Start()
-    {
-    }
     // Update is called once per frame
     private void Update()
     {
-        StartCoroutine(s());
-        //CreateBullet();
+        StartCoroutine(CreateBullet());
     }
 
-    private void CreateBullet()
+    private IEnumerator CreateBullet()
     {
-        if (!bulletList.Any() && Time.time > nextShootTime)
-        {
-            Bullet Bullet = Instantiate(bulletPrefab, bulletPoint.position, bulletPoint.rotation);
-
-            bulletList.Add(Bullet);
-
-            nextShootTime = Time.deltaTime + Constant.ATTACK_COLLTIME;
-
-            Bullet.onDelete += () => bulletList.Remove(Bullet);
-        }
-    }
-
-    private IEnumerator s()
-    {
-        if (!bulletList.Any())// && Time.time > nextShootTime)
+        if (!bulletList.Any())
         {
             Bullet Bullet = Instantiate(bulletPrefab, bulletPoint.position, bulletPoint.rotation);
 

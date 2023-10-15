@@ -81,7 +81,7 @@ public class Movement : MonoBehaviour
     }
     IEnumerator Set_RandomMove()
     { // 수정 해야 함
-        if(target == null) 
+        while(target == null) 
         {
             Vector3 randomDirection = Random.insideUnitSphere * Constant.INSIDEUNITSPHERE;
 

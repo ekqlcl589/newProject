@@ -8,7 +8,7 @@ public class Health : MonoBehaviour
 { 
     private float currentHp = Constant.MAX_HP;
 
-    public float CurrentHp // 변수 자체를 건드리는 게 아니라 함수를 통해 접근?
+    public float CurrentHp
     {
         get { return currentHp; }
         set 
