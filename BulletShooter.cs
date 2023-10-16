@@ -10,29 +10,36 @@ public class BulletShooter : MonoBehaviour
     // 생성할 공 원본 프리팹
     public Bullet bulletPrefab;
 
-    private float nextShootTime = Constant.ZERO;
+    private float nextShootTime;
 
-    private List<Bullet> bulletList = new List<Bullet>();
+    private int bulletCount;
 
-    // Update is called once per frame
-    private void Update()
+    private void Start()
     {
-        StartCoroutine(CreateBullet());
+        nextShootTime = Time.time + Constant.ATTACK_COLLTIME;
+        StartCoroutine(CreateBullet());      
     }
 
     private IEnumerator CreateBullet()
     {
-        if (!bulletList.Any())
+        while (true) 
         {
-            Bullet Bullet = Instantiate(bulletPrefab, bulletPoint.position, bulletPoint.rotation);
+            if (bulletCount == Constant.ZERO_COUNT && Time.time >= nextShootTime)
+            {
+                Bullet bullet = Instantiate(bulletPrefab, bulletPoint.position, bulletPoint.rotation);
 
-            bulletList.Add(Bullet);
+                bulletCount++;
 
-            nextShootTime = Time.deltaTime + Constant.ATTACK_COLLTIME;
+                // Time.time 을 이용해서 실제 경과 시간을 체크
+                nextShootTime = Time.time + Constant.ATTACK_COLLTIME;
 
-            Bullet.onDelete += () => bulletList.Remove(Bullet);
-            
-            yield return new WaitForSeconds(nextShootTime);
+                bullet.onDelete += () => bulletCount--;
+
+                // 프레임 대기
+                yield return null;
+
+            }
+            yield return null;
         }
     }
 }

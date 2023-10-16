@@ -12,15 +12,14 @@ public class Bullet : MonoBehaviour
     private void Awake()
     {
         rigidBody = GetComponent<Rigidbody>();
+        startPosition = transform.position;
     }
 
     private void Start()
     {
-        startPosition = transform.position;
-
         StartCoroutine(DeleteByDistance());
     }
-    // 정확한 프레임별로 움직임을 수행하도록 Update -> FixedUpdate로 이동 
+    
     private void FixedUpdate()
     {
         if (rigidBody != null)
@@ -43,7 +42,7 @@ public class Bullet : MonoBehaviour
 
     private void Delete()
     {
-        this.onDelete();
+        onDelete?.Invoke();
 
         Destroy(gameObject);
     }
@@ -52,14 +51,14 @@ public class Bullet : MonoBehaviour
     {
         while(rigidBody != null) 
         {
-            yield return new WaitForFixedUpdate();
-
             float distanceToStartPosition = Vector3.Distance(startPosition, rigidBody.position);
             
             if (distanceToStartPosition > Constant.BULLET_DELETE_DISTANCE)
             {
                 Delete();
             }
+
+            yield return new WaitForSeconds(Constant.BULLET_DELETE_TIME);
         }
     }
 }
