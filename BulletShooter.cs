@@ -35,10 +35,10 @@ public class BulletShooter : MonoBehaviour
 
                 bullet.onDelete += () => bulletCount--;
 
-                // 프레임 대기
-                yield return null;
+                yield return new WaitForSeconds(Constant.BULLET_CREATION_DELAY);
 
             }
+            // 프레임 대기
             yield return null;
         }
     }
