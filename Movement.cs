@@ -14,13 +14,13 @@ public class Movement : MonoBehaviour
     private void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
-
     }
 
     // Update is called once per frame
     private void Update()
     {
         MoveToTarget();
+
         StartCoroutine(Set_RandomMove());
     }
 
@@ -34,7 +34,6 @@ public class Movement : MonoBehaviour
             direction.y = Constant.ZERO_POINT;
 
             // 타겟을 향해 회전
-
             Quaternion rotation = Quaternion.LookRotation(direction.normalized);
             transform.rotation = rotation;
 
@@ -52,16 +51,18 @@ public class Movement : MonoBehaviour
     // 트리거에 접촉한 순간 정보를 저장해서 가지고 있는다 
     private void OnTriggerEnter(Collider other)
     {
+        //충돌 했을 때 처음 타겟으로 잡고 
         Health damageableTarget = other.GetComponent<Health>();
 
         if (damageableTarget != null)
         {
             potentialTargets.Add(damageableTarget);
 
-            // 만약 현재 타겟이 null이라면 첫 번째 오브젝트를 타겟으로 지정
+            // 만약 현재 타겟이 null 이라면 첫 번째 오브젝트를 타겟으로 지정
             if (target == null)
             {
                 target = damageableTarget.gameObject;
+                //target = potentialTargets[0].gameObject;
             }
         }
     }
@@ -76,7 +77,7 @@ public class Movement : MonoBehaviour
 
             // 만약 현재 타겟이 이 오브젝트인 경우
             if (target == damageableTarget.gameObject)
-            {
+                {
                 // 다른 오브젝트가 트리거 안에 있으면 그 중 하나를 새로운 타겟으로 지정
                 if (potentialTargets.Count > Constant.COUNT_ZERO)
                 {
@@ -85,7 +86,7 @@ public class Movement : MonoBehaviour
                 }
                 else
                 {
-                    // 다른 오브젝트가 없으면 타겟을 null로 설정
+                    // 다른 오브젝트가 없으면 타겟을 null 로 설정
                     target = null;
                 }
             }

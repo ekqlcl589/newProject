@@ -13,8 +13,6 @@ public class Constant
     public const float INSIDEUNITSPHERE = 5f;
     public const float MOVE_TIME = 3f;
 
-    public const float CREATE_TIME = 2f;
-    public const float BULLET_DISTANCE = 10f;
     public const float BULLET_DELETE_DISTANCE = 15f;
     public const float BULLET_DELETE_TIME = 5f;
 
@@ -24,7 +22,6 @@ public class Constant
 
     public const float ZERO = 0f;
     public const float ZERO_POINT = 0f;
-    public const float ONE_POINT = 1f;
     public const float DAMAGE = 10f;
     public const float BULLET_POWER = 1f;
 
