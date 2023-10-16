@@ -20,7 +20,7 @@ public class Movement : MonoBehaviour
     }
 
     // Update is called once per frame
-    private void Update()
+    private void FixedUpdate()
     {
         MoveToTarget();
 
@@ -52,15 +52,22 @@ public class Movement : MonoBehaviour
     }
     IEnumerator Set_RandomMove()
     {
-        while(target == null) 
+        while (target == null)
         {
-            Vector3 randomDirection = Random.insideUnitSphere * Constant.INSIDEUNITSPHERE;
+            if (rigidBody != null)
+            {
+                Vector3 randomDirection = Random.insideUnitSphere * Constant.INSIDEUNITSPHERE;
+                randomDirection.y = Constant.ZERO;
 
-            randomDirection.y = Constant.ZERO;
-            
-            float randomForce = Random.Range(Constant.MOVE_SPEED, Constant.FIND_TARGET);
+                float randomForce = Random.Range(Constant.MOVE_SPEED, Constant.FIND_TARGET);
 
-            rigidBody.AddForce(randomForce * randomDirection);
+                rigidBody.AddForce(randomForce * randomDirection);
+            }
+            else
+            {
+                // rigidBody가 null이면 코루틴을 종료
+                yield break;
+            }
 
             yield return new WaitForSeconds(Constant.MOVE_TIME);
         }
@@ -109,7 +116,7 @@ public class Movement : MonoBehaviour
         if (target != null && target.gameObject == this.gameObject)
         {
             // 삭제된 타겟이 현재 타겟이라면
-            if (potentialTargets.Count > 0)
+            if (potentialTargets.Count > Constant.ZERO_COUNT)
             {
                 // 다음 순서의 오브젝트를 타겟으로 설정
                 target = potentialTargets[0].gameObject;

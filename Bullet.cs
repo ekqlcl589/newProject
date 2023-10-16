@@ -51,6 +51,9 @@ public class Bullet : MonoBehaviour
     {
         while(rigidBody != null) 
         {
+            if (rigidBody == null)
+                yield break;
+
             float distanceToStartPosition = Vector3.Distance(startPosition, rigidBody.position);
             
             if (distanceToStartPosition > Constant.BULLET_DELETE_DISTANCE)
