@@ -6,15 +6,17 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Health : MonoBehaviour
-{ 
+{
+    //오브젝트 파괴 시 호출할 이벤트
+    public System.Action onDestroy; 
+
     private float currentHp = Constant.MAX_HP;
 
     public float CurrentHp
     {
         set 
         {
-            if( value != Constant.ZERO)
-                OnDamage(value);
+            OnDamage(value);
         }
     }
     
@@ -23,12 +25,16 @@ public class Health : MonoBehaviour
         currentHp -= damage;
 
         if (currentHp <= Constant.DIE_HP)
+        {
+            currentHp = Constant.DIE_HP;
             Die();
+        }
 
     }
     private void Die()
     {
         Destroy(gameObject);
+        onDestroy?.Invoke();
     }
 }
 

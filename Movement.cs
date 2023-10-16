@@ -16,6 +16,7 @@ public class Movement : MonoBehaviour
     private void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
+        StartCoroutine(Set_RandomMove());
     }
 
     // Update is called once per frame
@@ -23,7 +24,6 @@ public class Movement : MonoBehaviour
     {
         MoveToTarget();
 
-        StartCoroutine(Set_RandomMove());
     }
 
     private void MoveToTarget()
@@ -69,21 +69,18 @@ public class Movement : MonoBehaviour
      //트리거에 접촉한 순간 정보를 저장해서 가지고 있는다 
     private void OnTriggerEnter(Collider other)
     {
-        //충돌 했을 때 처음 타겟으로 잡고 
         Health damageableTarget = other.GetComponent<Health>();
-    
+
         if (damageableTarget != null)
         {
             potentialTargets.Add(damageableTarget);
-    
-            // 만약 현재 타겟이 null 이라면 첫 번째 오브젝트를 타겟으로 지정
+
             if (target == null)
             {
                 target = damageableTarget.gameObject;
             }
         }
     }
-
     private void OnTriggerExit(Collider other)
     {
         Health damageableTarget = other.GetComponent<Health>();
@@ -92,21 +89,36 @@ public class Movement : MonoBehaviour
         {
             potentialTargets.Remove(damageableTarget);
 
-            // 만약 현재 타겟이 이 오브젝트인 경우
             if (target == damageableTarget.gameObject)
+            {
+                foreach (Health potentialTarget in potentialTargets)
                 {
-                // 다른 오브젝트가 트리거 안에 있으면 그 중 하나를 새로운 타겟으로 지정
-                if (potentialTargets.Count > Constant.COUNT_ZERO)
-                {
-                    target = potentialTargets[0].gameObject;
+                    if (potentialTarget.gameObject.activeSelf)
+                    {
+                        target = potentialTarget.gameObject;
+                        return;
+                    }
                 }
-                else
-                {
-                    // 다른 오브젝트가 없으면 타겟을 null 로 설정
-                    target = null;
-                }
+
+                target = null;
             }
         }
     }
-
+    private void OnDestroy()
+    {
+        if (target != null && target.gameObject == this.gameObject)
+        {
+            // 삭제된 타겟이 현재 타겟이라면
+            if (potentialTargets.Count > 0)
+            {
+                // 다음 순서의 오브젝트를 타겟으로 설정
+                target = potentialTargets[0].gameObject;
+            }
+            else
+            {
+                // 다른 오브젝트가 없는 경우, 타겟을 null 로 설정
+                target = null;
+            }
+        }
+    }
 }
