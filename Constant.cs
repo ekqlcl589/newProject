@@ -21,6 +21,8 @@ public class Constant
     public const int COUNT_ZERO = 0;
 
     public const float ZERO = 0f;
+    public const int ZERO_COUNT = 0;
+
     public const float ZERO_POINT = 0f;
     public const float DAMAGE = 10f;
     public const float BULLET_POWER = 1f;
