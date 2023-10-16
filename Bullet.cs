@@ -20,16 +20,19 @@ public class Bullet : MonoBehaviour
 
         StartCoroutine(DeleteByDistance());
     }
-    private void Update()
+    // 정확한 프레임별로 움직임을 수행하도록 Update -> FixedUpdate로 이동 
+    private void FixedUpdate()
     {
         if (rigidBody != null)
         {
             rigidBody.AddForce(transform.forward * Constant.BULLET_POWER);
         }
     }
+
     private void OnCollisionEnter(Collision collision)
     {
         Health health = collision.gameObject.GetComponent<Health>();
+
         if (health != null) 
         {
             health.CurrentHp = Constant.DAMAGE;
@@ -47,12 +50,12 @@ public class Bullet : MonoBehaviour
 
     IEnumerator DeleteByDistance()
     {
-        if(rigidBody != null) 
+        while(rigidBody != null) 
         {
-            yield return new WaitForSeconds(Constant.BULLET_DELETE_TIME);
+            yield return new WaitForFixedUpdate();
 
             float distanceToStartPosition = Vector3.Distance(startPosition, rigidBody.position);
-
+            
             if (distanceToStartPosition > Constant.BULLET_DELETE_DISTANCE)
             {
                 Delete();

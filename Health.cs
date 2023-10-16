@@ -20,10 +20,10 @@ public class Health : MonoBehaviour
     
     private void OnDamage(float damage)
     {
+        currentHp -= damage;
+
         if (currentHp <= Constant.DIE_HP)
             Die();
-
-        currentHp -= damage;
 
     }
     private void Die()
