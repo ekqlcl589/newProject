@@ -7,7 +7,7 @@ public class Bullet : MonoBehaviour
     public Rigidbody rigidBody;
 
     private Vector3 startPosition;
-    public System.Action onDelete; // ¿Ã∏ß
+    public System.Action onDelete;
 
     private void Awake()
     {
