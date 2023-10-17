@@ -45,7 +45,7 @@ public class Bullet : MonoBehaviour
     {
         // 총알이 죽었을 때 이벤트 발생
         onDelete?.Invoke();
-
+        StopCoroutine(DeleteByDistance());
         Destroy(gameObject);
     }
 
@@ -53,14 +53,12 @@ public class Bullet : MonoBehaviour
     {
         while(rigidBody != null) 
         {
-            if (rigidBody == null)
-                yield break;
-
             float distanceToStartPosition = Vector3.Distance(startPosition, rigidBody.position);
             
             if (distanceToStartPosition > Constant.BULLET_DELETE_DISTANCE)
             {
                 Delete();
+                yield break;
             }
 
             yield return new WaitForSeconds(Constant.BULLET_DELETE_TIME);
