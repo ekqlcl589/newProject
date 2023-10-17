@@ -8,23 +8,31 @@ using UnityEngine.UI;
 public class Health : MonoBehaviour
 {
     //오브젝트 파괴 시 호출할 이벤트
-    public System.Action onDestroy; 
+    public System.Action onDestroy;
 
-    private float currentHp = Constant.MAX_HP;
+    private float currentHp;
+    private void Start()
+    {
+        currentHp = Constant.MAX_HP;
+    }
 
     public float CurrentHp
     {
         set 
         {
-            currentHp -= value;
-
-            if (currentHp <= Constant.DIE_HP || currentHp <= value)
+            if (currentHp > Constant.DIE_HP)
             {
-                currentHp = Constant.DIE_HP;
-                Die();
+                currentHp -= value;
+
+                if (currentHp <= Constant.DIE_HP)
+                {
+                    currentHp = Constant.DIE_HP;
+                    Die();
+                }
+
+                Debug.Log(currentHp);
             }
 
-            Debug.Log(currentHp);
         }
     }
     
