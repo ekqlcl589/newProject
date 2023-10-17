@@ -24,6 +24,7 @@ public class Bullet : MonoBehaviour
     {
         if (rigidBody != null)
         {
+            // 물리적인 움직임을 행하므로 고정된 프레임 마다 총알에 힘을 가해줌
             rigidBody.AddForce(transform.forward * Constant.BULLET_POWER);
         }
     }
@@ -34,7 +35,7 @@ public class Bullet : MonoBehaviour
 
         if (health != null) 
         {
-            health.CurrentHp = Constant.DAMAGE;
+            health.CurrentHp = Constant.DAMAGE * 9;
         }
 
         Delete();
@@ -42,6 +43,7 @@ public class Bullet : MonoBehaviour
 
     private void Delete()
     {
+        // 총알이 죽었을 때 이벤트 발생
         onDelete?.Invoke();
 
         Destroy(gameObject);
@@ -49,9 +51,9 @@ public class Bullet : MonoBehaviour
 
     IEnumerator DeleteByDistance()
     {
-        while(rigidBody != null) 
+        while(gameObject != null) 
         {
-            if (rigidBody == null)
+            if (gameObject == null)
                 yield break;
 
             float distanceToStartPosition = Vector3.Distance(startPosition, rigidBody.position);
