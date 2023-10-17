@@ -10,7 +10,6 @@ public class Movement : MonoBehaviour
 
     private List<Health> potentialTargets = new List<Health>();
 
-    Health damageableTarget;
     private Rigidbody rigidBody;
 
     private void Start()
@@ -23,7 +22,6 @@ public class Movement : MonoBehaviour
     private void FixedUpdate()
     {
         MoveToTarget();
-
     }
 
     private void MoveToTarget()

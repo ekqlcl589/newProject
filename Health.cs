@@ -16,7 +16,8 @@ public class Health : MonoBehaviour
     {
         set 
         {
-            OnDamage(value);
+            if(currentHp < Constant.MAX_HP)
+                OnDamage(value);
         }
     }
     
