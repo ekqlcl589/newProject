@@ -35,7 +35,7 @@ public class Bullet : MonoBehaviour
 
         if (health != null) 
         {
-            health.CurrentHp = Constant.DAMAGE * 9;
+            health.CurrentHp = Constant.DAMAGE;
         }
 
         Delete();
@@ -51,9 +51,9 @@ public class Bullet : MonoBehaviour
 
     IEnumerator DeleteByDistance()
     {
-        while(gameObject != null) 
+        while(rigidBody != null) 
         {
-            if (gameObject == null)
+            if (rigidBody == null)
                 yield break;
 
             float distanceToStartPosition = Vector3.Distance(startPosition, rigidBody.position);

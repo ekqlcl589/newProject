@@ -16,22 +16,18 @@ public class Health : MonoBehaviour
     {
         set 
         {
-            if(currentHp < Constant.MAX_HP)
-                OnDamage(value);
+            currentHp -= value;
+
+            if (currentHp <= Constant.DIE_HP || currentHp <= value)
+            {
+                currentHp = Constant.DIE_HP;
+                Die();
+            }
+
+            Debug.Log(currentHp);
         }
     }
     
-    private void OnDamage(float damage)
-    {
-        currentHp -= damage;
-
-        if (currentHp <= Constant.DIE_HP)
-        {
-            currentHp = Constant.DIE_HP;
-            Die();
-        }
-
-    }
     private void Die()
     {
         Destroy(gameObject);

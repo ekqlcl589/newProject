@@ -52,7 +52,7 @@ public class Movement : MonoBehaviour
     {
         while (target == null)
         {
-            if (rigidBody != null)
+            if (gameObject != null)
             {
                 Vector3 randomDirection = Random.insideUnitSphere * Constant.INSIDEUNITSPHERE;
                 randomDirection.y = Constant.ZERO;
@@ -63,7 +63,7 @@ public class Movement : MonoBehaviour
             }
             else
             {
-                // rigidBody가 null이면 코루틴을 종료
+                // rigidBody가 null 이면 코루틴을 종료
                 yield break;
             }
 
@@ -111,7 +111,7 @@ public class Movement : MonoBehaviour
     }
     private void OnDestroy()
     {
-        if (target != null && target.gameObject == this.gameObject)
+        if (target != null)
         {
             // 삭제된 타겟이 현재 타겟이라면
             if (potentialTargets.Count > Constant.ZERO_COUNT)
