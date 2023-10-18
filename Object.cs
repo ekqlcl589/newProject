@@ -65,25 +65,24 @@ public class Object : MonoBehaviour
 
     }
 
-    private void SetChangeTarget() // 어떻게 해야할 지 전혀 모르겠다....
+    private void SetChangeTarget()
     {
-        foreach (Health potentialTarget in potentialTargets)
+        // 다른 잠재적인 타겟이 있는 동안 계속 반복
+        while (potentialTargets.Count > 0)
         {
-            potentialTargets.Dequeue(); // 삭제한 게 target 이 아닐수도 있다? 그리고 죽은 오브젝트가 다음 타겟을 지정하고 있다 
+            Health potentialTarget = potentialTargets.Dequeue();
 
-            if (potentialTargets.Count > Constant.ZERO_COUNT)
+            // 만약 잠재적인 타겟이 살아있다면
+            if (potentialTarget != null)
             {
-                target = potentialTargets.Peek().gameObject;
+                target = potentialTarget.gameObject;
+                return; 
             }
-
-            else
-            {
-                target = null;
-                potentialTargets.Clear();
-            }
-
-            return;
         }
+
+        // 모든 잠재적인 타겟이 죽었거나 null일 경우, target을 null로 설정하고 큐를 비웁니다.
+        target = null;
+        potentialTargets.Clear();
     }
 
     private void Move()
