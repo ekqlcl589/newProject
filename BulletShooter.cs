@@ -20,11 +20,11 @@ public class BulletShooter : MonoBehaviour
     {
         nextShootTime = Constant.ATTACK_COLLTIME;
     }
-    private void Start()
-    {
-        StartCoroutine(CreateBullet());      
-    }
 
+    public void BulletCreate()
+    {
+        StartCoroutine(CreateBullet());
+    }
     private IEnumerator CreateBullet()
     {
         while (true) 
@@ -32,8 +32,6 @@ public class BulletShooter : MonoBehaviour
             // 생성된 총알이 없을 때 
             if (bulletCount == Constant.ZERO_COUNT)
             {
-                yield return new WaitForSeconds(nextShootTime);
-                // 총알 생성 
                 Bullet bullet = Instantiate(bulletPrefab, bulletPoint.position, bulletPoint.rotation);
                 
                 bulletCount++;
@@ -42,6 +40,8 @@ public class BulletShooter : MonoBehaviour
 
                 // 총알이 충돌 하거나 거리가 멀어져서 삭제되면 카운트 다운
                 bullet.onDelete += () => bulletCount--;
+
+                yield return new WaitForSeconds(nextShootTime);
             }
             // 갯수 초과시 코루틴 종료
             if(bulletCount >= Constant.BULLET_DELETE_COUNT) 

@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public Rigidbody rigidBody;
+    private Rigidbody rigidBody;
 
     private Vector3 startPosition;
+
+    private bool isAttack;
+
     public System.Action onDelete;
 
     private void Awake()
@@ -22,10 +25,7 @@ public class Bullet : MonoBehaviour
     
     private void FixedUpdate()
     {
-        if (rigidBody != null)
-        {
-            rigidBody.AddForce(transform.forward * Constant.BULLET_POWER);
-        }
+        BulletMove();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -34,12 +34,16 @@ public class Bullet : MonoBehaviour
 
         if (health != null) 
         {
-            health.CurrentHp = Constant.DAMAGE;
+            isAttack = true;
         }
 
         Delete();
     }
 
+    public bool IsAttack
+    {
+        get { return isAttack; }
+    }
     private void Delete()
     {
         // 총알이 죽었을 때 이벤트 발생
@@ -56,11 +60,21 @@ public class Bullet : MonoBehaviour
             
             if (distanceToStartPosition > Constant.BULLET_DELETE_DISTANCE)
             {
+                isAttack = false;
                 Delete();
                 yield break;
             }
 
             yield return new WaitForSeconds(Constant.BULLET_DELETE_TIME);
         }
+    }
+
+    private void BulletMove()
+    {
+        if (rigidBody != null)
+        {
+            rigidBody.AddForce(transform.forward * Constant.BULLET_POWER);
+        }
+
     }
 }

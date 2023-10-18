@@ -7,9 +7,7 @@ using UnityEngine.UIElements;
 
 public class Movement : MonoBehaviour
 {
-    private GameObject target;
-    
-    private Queue<Health> potentialTargets = new Queue<Health>();
+    //private GameObject target;
 
     private Rigidbody rigidBody;
 
@@ -18,18 +16,19 @@ public class Movement : MonoBehaviour
         rigidBody = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
-    private void FixedUpdate()
-    {
-        MoveToTarget();
 
-        StartCoroutine(Set_RandomMove());
+    public void MoveUpdate(GameObject target)
+    {
+        if(target == null)
+            StartCoroutine(Set_RandomMove(target));
+        else
+            MoveToTarget(target);
     }
 
-    private void MoveToTarget()
+    private void MoveToTarget(GameObject target)
     {
-        if (target != null)
-        {
+        //if (target != null) 스칼렛한테 물어보기 
+        //{
             // 방향 벡터
             Vector3 direction = target.transform.position - transform.position;
 
@@ -48,12 +47,12 @@ public class Movement : MonoBehaviour
                 Vector3 move = direction.normalized * Constant.MOVE_SPEED * Time.deltaTime;
                 transform.position += move;
             }
-        }
+        //}
     }
-    IEnumerator Set_RandomMove()
+    private IEnumerator Set_RandomMove(GameObject target)
     {
-        if (target == null)
-        {
+        //if (target == null)
+        //{
             if (rigidBody != null)
             {
                 Vector3 randomDirection = Random.insideUnitSphere * Constant.INSIDEUNITSPHERE;
@@ -70,43 +69,6 @@ public class Movement : MonoBehaviour
             }
 
             yield return new WaitForSeconds(Constant.MOVE_TIME);
-        }
-    }
-
-     //트리거에 접촉한 순간 정보를 저장해서 가지고 있는다 
-    private void OnTriggerEnter(Collider other)
-    {
-        Health damageableTarget = other.GetComponent<Health>();
-
-        if (damageableTarget != null)
-        {
-            potentialTargets.Enqueue(damageableTarget);
-            damageableTarget.onDestroy += SetChangeTarget;
-
-            if (target == null)
-            {
-                target = damageableTarget.gameObject;
-            }
-        }
-    }
-
-    private void SetChangeTarget()
-    {
-        foreach (Health potentialTarget in potentialTargets)
-        {
-            potentialTargets.Dequeue();
-
-            if (potentialTargets.Count > Constant.ZERO_COUNT)
-            {
-                target = potentialTargets.Peek().gameObject;
-            }
-            else
-            {
-                target = null;
-                potentialTargets.Clear();
-            }
-
-            return;
-        }
+        //}
     }
 }

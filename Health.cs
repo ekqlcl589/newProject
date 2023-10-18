@@ -16,13 +16,17 @@ public class Health : MonoBehaviour
         currentHp = Constant.MAX_HP;
     }
 
-    public float CurrentHp
+    public float MinusHp
     {
+        get { return currentHp; }
         set 
         {
             if (currentHp > Constant.DIE_HP)
             {
-                currentHp -= value;
+                if (value < Constant.DIE_HP)
+                    return;
+
+                currentHp = value;
 
                 if (currentHp <= Constant.DIE_HP)
                 {
