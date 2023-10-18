@@ -65,7 +65,7 @@ public class Object : MonoBehaviour
 
     }
 
-    private void SetChangeTarget()
+    private void SetChangeTarget() // 어떻게 해야할 지 전혀 모르겠다....
     {
         foreach (Health potentialTarget in potentialTargets)
         {
