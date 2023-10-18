@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 public class Movement : MonoBehaviour
 {
     private GameObject target;
-
-    private List<Health> potentialTargets = new List<Health>();
+    
+    private Queue<Health> potentialTargets = new Queue<Health>();
 
     private Rigidbody rigidBody;
 
@@ -19,7 +20,6 @@ public class Movement : MonoBehaviour
 
     // Update is called once per frame
     private void FixedUpdate()
-
     {
         MoveToTarget();
 
@@ -57,11 +57,11 @@ public class Movement : MonoBehaviour
             if (rigidBody != null)
             {
                 Vector3 randomDirection = Random.insideUnitSphere * Constant.INSIDEUNITSPHERE;
-                randomDirection.y = Constant.ZERO;
+                randomDirection.y = Constant.ZERO_POINT;
 
                 float randomForce = Random.Range(Constant.MOVE_SPEED, Constant.FIND_TARGET);
 
-                rigidBody.AddForce(randomForce * randomDirection);
+                rigidBody.AddForce(randomForce * randomDirection.normalized);
             }
             else
             {
@@ -80,8 +80,7 @@ public class Movement : MonoBehaviour
 
         if (damageableTarget != null)
         {
-            potentialTargets.Add(damageableTarget);
-
+            potentialTargets.Enqueue(damageableTarget);
             damageableTarget.onDestroy += SetChangeTarget;
 
             if (target == null)
@@ -95,12 +94,17 @@ public class Movement : MonoBehaviour
     {
         foreach (Health potentialTarget in potentialTargets)
         {
-            potentialTargets.Remove(potentialTarget);
+            potentialTargets.Dequeue();
 
-            if (potentialTargets.Count > 0)
-                target = potentialTargets[0].gameObject;
+            if (potentialTargets.Count > Constant.ZERO_COUNT)
+            {
+                target = potentialTargets.Peek().gameObject;
+            }
             else
+            {
                 target = null;
+                potentialTargets.Clear();
+            }
 
             return;
         }

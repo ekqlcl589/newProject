@@ -24,7 +24,6 @@ public class Bullet : MonoBehaviour
     {
         if (rigidBody != null)
         {
-            // 물리적인 움직임을 행하므로 고정된 프레임 마다 총알에 힘을 가해줌
             rigidBody.AddForce(transform.forward * Constant.BULLET_POWER);
         }
     }
@@ -35,7 +34,7 @@ public class Bullet : MonoBehaviour
 
         if (health != null) 
         {
-            health.CurrentHp = Constant.DAMAGE * 10f;
+            health.CurrentHp = Constant.DAMAGE;
         }
 
         Delete();

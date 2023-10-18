@@ -29,10 +29,7 @@ public class Health : MonoBehaviour
                     currentHp = Constant.DIE_HP;
                     Die();
                 }
-
-                Debug.Log(currentHp);
             }
-
         }
     }
     
