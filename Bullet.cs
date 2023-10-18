@@ -35,7 +35,7 @@ public class Bullet : MonoBehaviour
 
         if (health != null) 
         {
-            health.CurrentHp = Constant.DAMAGE;
+            health.CurrentHp = Constant.DAMAGE * 10f;
         }
 
         Delete();

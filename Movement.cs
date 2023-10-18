@@ -12,16 +12,18 @@ public class Movement : MonoBehaviour
 
     private Rigidbody rigidBody;
 
-    private void Start()
+    private void Awake()
     {
         rigidBody = GetComponent<Rigidbody>();
-        StartCoroutine(Set_RandomMove());
     }
 
     // Update is called once per frame
     private void FixedUpdate()
+
     {
         MoveToTarget();
+
+        StartCoroutine(Set_RandomMove());
     }
 
     private void MoveToTarget()
@@ -50,9 +52,9 @@ public class Movement : MonoBehaviour
     }
     IEnumerator Set_RandomMove()
     {
-        while (target == null)
+        if (target == null)
         {
-            if (gameObject != null)
+            if (rigidBody != null)
             {
                 Vector3 randomDirection = Random.insideUnitSphere * Constant.INSIDEUNITSPHERE;
                 randomDirection.y = Constant.ZERO;
@@ -80,50 +82,27 @@ public class Movement : MonoBehaviour
         {
             potentialTargets.Add(damageableTarget);
 
+            damageableTarget.onDestroy += SetChangeTarget;
+
             if (target == null)
             {
                 target = damageableTarget.gameObject;
             }
         }
     }
-    private void OnTriggerExit(Collider other)
+
+    private void SetChangeTarget()
     {
-        Health damageableTarget = other.GetComponent<Health>();
-
-        if (damageableTarget != null)
+        foreach (Health potentialTarget in potentialTargets)
         {
-            potentialTargets.Remove(damageableTarget);
+            potentialTargets.Remove(potentialTarget);
 
-            if (target == damageableTarget.gameObject)
-            {
-                foreach (Health potentialTarget in potentialTargets)
-                {
-                    if (potentialTarget.gameObject.activeSelf)
-                    {
-                        target = potentialTarget.gameObject;
-                        return;
-                    }
-                }
-
-                target = null;
-            }
-        }
-    }
-    private void OnDestroy()
-    {
-        if (target != null)
-        {
-            // 삭제된 타겟이 현재 타겟이라면
-            if (potentialTargets.Count > Constant.ZERO_COUNT)
-            {
-                // 다음 순서의 오브젝트를 타겟으로 설정
+            if (potentialTargets.Count > 0)
                 target = potentialTargets[0].gameObject;
-            }
             else
-            {
-                // 다른 오브젝트가 없는 경우, 타겟을 null 로 설정
                 target = null;
-            }
+
+            return;
         }
     }
 }

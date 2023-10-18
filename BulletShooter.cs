@@ -30,7 +30,7 @@ public class BulletShooter : MonoBehaviour
         while (true) 
         {
             // 생성된 총알이 없을 때 
-            if (bulletCount == Constant.ZERO_COUNT)// && Time.time >= nextShootTime)
+            if (bulletCount == Constant.ZERO_COUNT)
             {
                 yield return new WaitForSeconds(nextShootTime);
                 // 총알 생성 
