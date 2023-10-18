@@ -52,4 +52,9 @@ public class BulletShooter : MonoBehaviour
             yield return null;
         }
     }
+
+    private void OnDestroy()
+    {
+        StopCoroutine(CreateBullet());
+    }
 }
