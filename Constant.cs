@@ -19,7 +19,7 @@ public class Constant
     public const int BULLET_DELETE_COUNT = 2;
     public const float BULLET_POWER = 1f;
 
-
+    public const float WAIT_FOR_ONESECOND = 1f;
     public const int ZERO_COUNT = 0;
 
     public const float ZERO_POINT = 0f;

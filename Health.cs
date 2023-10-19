@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class Health : MonoBehaviour
 {
     //오브젝트 파괴 시 호출할 이벤트
-    public System.Action onDestroy;
 
     private float currentHp;
     private void Start()
@@ -16,15 +15,13 @@ public class Health : MonoBehaviour
         currentHp = Constant.MAX_HP;
     }
 
-    public float MinusHp
+    public float SetMinusHp
     {
         get { return currentHp; }
         set 
         {
             if (currentHp > Constant.DIE_HP)
             {
-                if (value < Constant.DIE_HP)
-                    return;
 
                 currentHp = value;
 
@@ -40,7 +37,6 @@ public class Health : MonoBehaviour
     private void Die()
     {
         Destroy(gameObject);
-        onDestroy?.Invoke();
     }
 }
 
