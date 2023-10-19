@@ -69,6 +69,40 @@ public class CubeObject : MonoBehaviour
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        // 트리거 영역에서 타겟이 나갈 때 처리
+        Health exitTarget = other.GetComponent<Health>();
+
+        // 트리거에서 나가는 타겟이 null 이 아니라면
+        if (exitTarget != null)
+        {
+            // 새로운 큐 생성
+            Queue<Health> newQueue = new Queue<Health>();
+
+            // 기존 큐를 순회하면서 원하는 타겟은 건너 뜀
+            while (potentialTargets.Count > Constant.ZERO_COUNT)
+            {
+                // 새로운 타겟에 기존 큐의 마지막 인자를 대입
+                Health target = potentialTargets.Dequeue();
+                // 새로운 타겟이 트리거 밖으로 나가는 타겟과 다르다면
+                if (target != exitTarget)
+                {
+                    // 새로운 큐에 새로운 큐를 저장
+                    newQueue.Enqueue(target);
+                }
+            }
+
+            // 기존 큐를 새로운 큐로 대체
+            potentialTargets = newQueue;
+
+            // 만약 현재 타겟이 나가는 타겟이면 현재 타겟도 null로 설정
+            if (exitTarget.gameObject == target)
+            {
+                target = null;
+            }
+        }
+    }
     // 주기적으로 타겟을 체크 하면서 타겟이 null 이면 큐에서 하나씩 빼서 타겟을 지정해준다.
     IEnumerator CheckTarget()
     {
