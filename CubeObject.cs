@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class Object : MonoBehaviour
+public class CubeObject : MonoBehaviour
 {
     private GameObject target;
 
@@ -24,15 +25,14 @@ public class Object : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ObjectInitialize();
+        StartCoroutine(CreateBullet());
+        StartCoroutine(CheckTarget());
     }
 
     // Update is called once per frame
     void Update()
     {
-        StartCoroutine(CheckTarget());
 
-        ObjectUpdate();
     }
 
     void FixedUpdate()
@@ -44,8 +44,8 @@ public class Object : MonoBehaviour
     {
         Bullet bullet = collision.gameObject.GetComponent<Bullet>();
 
-        if (bullet != null)
-            health.SetMinusHp -= Constant.DAMAGE;
+        if (bullet != null && health != null)
+            health.SetMinusHp -= bullet.BulletDamage;
     }
 
     private void OnTriggerEnter(Collider other) // 트리거에 들어 왔으면 큐 에 저장만 한다
@@ -61,38 +61,51 @@ public class Object : MonoBehaviour
     // 주기적으로 타겟을 체크 하면서 타겟이 null 이면 큐에서 하나씩 빼서 타겟을 지정해준다.
     IEnumerator CheckTarget()
     {
-        if (target == null && potentialTargets.Count > Constant.ZERO_COUNT)
+        while (true) 
         {
-            target = potentialTargets.Dequeue().gameObject;
-            
-            yield return new WaitForSeconds(Constant.WAIT_FOR_ONESECOND);
-        }
+            if (target == null && potentialTargets.Count > Constant.ZERO_COUNT)
+            {
+                target = potentialTargets.Dequeue().gameObject;
 
+            }
+
+            yield return new WaitForSeconds(Constant.WAIT_FOR_ONESECOND + 3f);
+        }
     }
 
     // 초기화 시 필요한 함수들은 한 곳에 모아두고 
-    private void ObjectInitialize()
+    IEnumerator CreateBullet()
     {
-        if (movement != null)
+        while(bulletShooter != null) 
         {
-            movement.MoveInitialize(target);
-        }
-    }
+            if (target != null)
+            {
+                bulletShooter.CreateBullet1();
+            }
 
-    private void ObjectUpdate()
-    {
-        if (bulletShooter != null)
-        {
-            bulletShooter.CreateBulletStart(target);
+            yield return new WaitForSeconds(Constant.BULLET_ATTACK_DELAY);
         }
-
     }
     // update, fixed 등등 도 똑같음 
     private void ObjectFixedUpdate()
     {
         if (movement != null)
         {
-            movement.MoveUpdate(target);
+            if(target != null) 
+            {
+                movement.MoveToTarget(target);
+            }
+            else
+            {
+                movement.RandomMove();
+            }
         }
+    }
+
+    private void OnDestroy()
+    {
+        StopCoroutine(CreateBullet());
+        StopCoroutine(CheckTarget());
+
     }
 }
