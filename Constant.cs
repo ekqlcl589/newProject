@@ -16,7 +16,7 @@ public class Constant
 
     public const float BULLET_DELETE_DISTANCE = 15f;
     public const float BULLET_DELETE_TIME = 3f;
-    public const int BULLET_DELETE_COUNT = 2;
+    public const float BULLET_ATTACK_DELAY = 2f;
     public const float BULLET_POWER = 1f;
 
     public const float WAIT_FOR_ONESECOND = 1f;
