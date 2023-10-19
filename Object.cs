@@ -24,86 +24,75 @@ public class Object : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        BulletFire();
-        health.onDestroy += SetChangeTarget;
+        ObjectInitialize();
     }
 
     // Update is called once per frame
     void Update()
     {
+        StartCoroutine(CheckTarget());
+
+        ObjectUpdate();
     }
 
     void FixedUpdate()
     {
-        Move();
+        ObjectFixedUpdate();
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         Bullet bullet = collision.gameObject.GetComponent<Bullet>();
 
-        if (bullet != null && bullet.IsAttack)
-            health.MinusHp -= Constant.DAMAGE;
-
-        Debug.Log(health.MinusHp);
+        if (bullet != null)
+            health.SetMinusHp -= Constant.DAMAGE;
     }
 
-    private void OnTriggerEnter(Collider other) // 트리거 됐을 때 그 기능만 불러 온다 
+    private void OnTriggerEnter(Collider other) // 트리거에 들어 왔으면 큐 에 저장만 한다
     {
         Health damageableTarget = other.GetComponent<Health>();
 
         if (damageableTarget != null)
         {
             potentialTargets.Enqueue(damageableTarget);
-            damageableTarget.onDestroy += SetChangeTarget;
-            if (target == null)
-            {
-                target = potentialTargets.Dequeue().gameObject;
-
-            }
         }
-
     }
 
-    private void SetChangeTarget()
+    // 주기적으로 타겟을 체크 하면서 타겟이 null 이면 큐에서 하나씩 빼서 타겟을 지정해준다.
+    IEnumerator CheckTarget()
     {
-        // 다른 잠재적인 타겟이 있는 동안 계속 반복
-        while (potentialTargets.Count > 0)
+        if (target == null && potentialTargets.Count > Constant.ZERO_COUNT)
         {
-            Health potentialTarget = potentialTargets.Dequeue();
-
-            // 만약 잠재적인 타겟이 살아있다면
-            if (potentialTarget != null)
-            {
-                target = potentialTarget.gameObject;
-                return; 
-            }
+            target = potentialTargets.Dequeue().gameObject;
+            
+            yield return new WaitForSeconds(Constant.WAIT_FOR_ONESECOND);
         }
 
-        // 모든 잠재적인 타겟이 죽었거나 null일 경우, target을 null로 설정하고 큐를 비웁니다.
-        target = null;
-        potentialTargets.Clear();
     }
 
-    private void Move()
+    // 초기화 시 필요한 함수들은 한 곳에 모아두고 
+    private void ObjectInitialize()
+    {
+        if (movement != null)
+        {
+            movement.MoveInitialize(target);
+        }
+    }
+
+    private void ObjectUpdate()
+    {
+        if (bulletShooter != null)
+        {
+            bulletShooter.CreateBulletStart(target);
+        }
+
+    }
+    // update, fixed 등등 도 똑같음 
+    private void ObjectFixedUpdate()
     {
         if (movement != null)
         {
             movement.MoveUpdate(target);
         }
-    }
-
-    private void BulletFire()
-    {
-        if (bulletShooter != null)
-        {
-            bulletShooter.BulletCreate();
-        }
-
-    }
-
-    private void Die()
-    {
-        Destroy(gameObject);
     }
 }
