@@ -7,22 +7,20 @@ using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
-    //오브젝트 파괴 시 호출할 이벤트
-
     private float currentHp;
     private void Start()
     {
         currentHp = Constant.MAX_HP;
     }
 
-    public float SetMinusHp
+    
+    public float SetMinusHp // 값을 받을 때 -=으로 해줘야 함
     {
         get { return currentHp; }
         set 
         {
             if (currentHp > Constant.DIE_HP)
             {
-
                 currentHp = value;
 
                 if (currentHp <= Constant.DIE_HP)
