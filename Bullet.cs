@@ -8,10 +8,6 @@ public class Bullet : MonoBehaviour
 
     private Vector3 startPosition;
 
-    private bool isAttack;
-
-    public System.Action onDelete;
-
     private void Awake()
     {
         rigidBody = GetComponent<Rigidbody>();
@@ -30,24 +26,11 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Health health = collision.gameObject.GetComponent<Health>();
-
-        if (health != null) 
-        {
-            isAttack = true;
-        }
-
         Delete();
     }
 
-    public bool IsAttack
-    {
-        get { return isAttack; }
-    }
     private void Delete()
     {
-        // 총알이 죽었을 때 이벤트 발생
-        onDelete?.Invoke();
         StopCoroutine(DeleteByDistance());
         Destroy(gameObject);
     }
@@ -59,8 +42,8 @@ public class Bullet : MonoBehaviour
             float distanceToStartPosition = Vector3.Distance(startPosition, rigidBody.position);
             
             if (distanceToStartPosition > Constant.BULLET_DELETE_DISTANCE)
+
             {
-                isAttack = false;
                 Delete();
                 yield break;
             }

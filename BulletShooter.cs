@@ -10,51 +10,22 @@ public class BulletShooter : MonoBehaviour
     // 생성할 공 원본 프리팹
     public Bullet bulletPrefab;
 
-    // 총알 생성 주기를 관리하기 위한 변수 
-    private float nextShootTime;
+    private bool fire = true;
 
-    // 생성된 총알의 갯수를 관리하기 위한 변수 
-    private int bulletCount;
-
-    private void Awake()
+    public void CreateBulletStart(GameObject target)
     {
-        nextShootTime = Constant.ATTACK_COLLTIME;
+        StartCoroutine(CreateBullet(target));
     }
-
-    public void BulletCreate()
+    private IEnumerator CreateBullet(GameObject target) // 이건 타겟이 있을 때만 발사 굳이 한발씩만 쏠 필요는 없다 
     {
-        StartCoroutine(CreateBullet());
-    }
-    private IEnumerator CreateBullet()
-    {
-        while (true) 
+        if (target != null && fire)
         {
-            // 생성된 총알이 없을 때 
-            if (bulletCount == Constant.ZERO_COUNT)
-            {
-                Bullet bullet = Instantiate(bulletPrefab, bulletPoint.position, bulletPoint.rotation);
-                
-                bulletCount++;
+            Bullet bullet = Instantiate(bulletPrefab, bulletPoint.position, bulletPoint.rotation);
 
-                nextShootTime = Constant.ATTACK_COLLTIME;
+            fire = false;
+            yield return new WaitForSeconds(Constant.ATTACK_COLLTIME);
+            fire = true;
 
-                // 총알이 충돌 하거나 거리가 멀어져서 삭제되면 카운트 다운
-                bullet.onDelete += () => bulletCount--;
-
-                yield return new WaitForSeconds(nextShootTime);
-            }
-            // 갯수 초과시 코루틴 종료
-            if(bulletCount >= Constant.BULLET_DELETE_COUNT) 
-            {
-                yield break;
-            }
-            // 프레임 대기
-            yield return null;
         }
-    }
-
-    private void OnDestroy()
-    {
-        StopCoroutine(CreateBullet());
     }
 }
