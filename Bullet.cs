@@ -10,6 +10,9 @@ public class Bullet : MonoBehaviour
     // Bullet 객체의 초기 위치값을 저장한 변수
     private Vector3 startPosition;
 
+    // 코루틴 종료 시 코루틴이 실행 중인지를 확인 하기 위한 변수
+    private Coroutine DeleteByDistanceCoroutine;
+
     // Bullet 의 데미지를 저장할 변수
     private float bulletDamage;
 
@@ -31,7 +34,7 @@ public class Bullet : MonoBehaviour
         // bulletDamage 변수에 Constant.DAMAGE(10f) 값 대입
         bulletDamage = Constant.DAMAGE;
         // 거리가 멀어지면 삭제시키는 코루틴 시작
-        StartCoroutine(DeleteByDistance());
+        DeleteByDistanceCoroutine = StartCoroutine(DeleteByDistance());
     }
     
     private void FixedUpdate()
@@ -48,8 +51,9 @@ public class Bullet : MonoBehaviour
 
     private void Delete()
     {
-        // 코루틴 종료
-        StopCoroutine(DeleteByDistance());
+        // DeleteByDistanceCoroutine이 실행중이라면 코루틴 종료
+        if (DeleteByDistanceCoroutine != null)
+            StopCoroutine(DeleteByDistance());
         // Bullet 객체 삭제 
         Destroy(gameObject);
     }
