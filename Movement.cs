@@ -33,7 +33,7 @@ public class Movement : MonoBehaviour
             transform.position += move;
         }
     }
-
+    
     public void RandomMove()
     {
         // Random 클래스의 반경 1을 가지는 구의 임의의 지점에 Constant.INSIDEUNITSPHERE(5)를 곱해서 5의 반경을 갖는 임의의 벡터를 구해줌

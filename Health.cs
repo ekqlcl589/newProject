@@ -21,6 +21,7 @@ public class Health : MonoBehaviour
         // 현재 체력 반환
         get { return currentHp; }
         set 
+
         {
             // 만약 현재 체력이 Constant.DIE_HP(0) 보다 높다면
             if (currentHp > Constant.DIE_HP)

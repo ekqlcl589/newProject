@@ -58,6 +58,7 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject);
     }
 
+    // 첫 발사된 위치와 날아가는 Bullet 의 거리를 비교하여 거리가 멀어진다면 Bullet 을 삭제시키고, 코루틴을 멈추기 위한 코드   
     IEnumerator DeleteByDistance()
     {
         // rigidBody 컴포넌트가 null 이 아니라면
