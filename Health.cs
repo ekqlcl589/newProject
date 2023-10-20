@@ -11,10 +11,9 @@ public class Health : MonoBehaviour
     private float currentHp;
     private void Start()
     {
-        // 현재 체력을 Constant.MAX_HP(100)으로 초기화 
+        // 현재 체력을 Constant.MAX_HP(100)으로 대입
         currentHp = Constant.MAX_HP;
     }
-
     
     // 현재 체력을 관리하는 프로퍼티 
     public float SetMinusHp // 값을 받을 때 -=으로 해줘야 함

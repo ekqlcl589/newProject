@@ -47,6 +47,6 @@ public class Movement : MonoBehaviour
         Vector3 move = randomDirection.normalized * randomForce * Time.deltaTime;
         // move 변수의 값을 Movement 를 소유한 객체의 위치값에 더한 후 그 결과를 객체의 위치값에 대입
         transform.position += move;
-
+        
     }
 }

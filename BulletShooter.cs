@@ -12,7 +12,7 @@ public class BulletShooter : MonoBehaviour
     public Bullet bulletPrefab;
 
 
-    public void CreateBullet1() 
+    public void Shot()
     {
         // Bullet 의 객체에 원본 프리팹과 초기 위치값, 초기 회전값을 가지는 사본 생성
         Bullet bullet = Instantiate(bulletPrefab, bulletPoint.position, bulletPoint.rotation);

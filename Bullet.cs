@@ -22,14 +22,14 @@ public class Bullet : MonoBehaviour
     {
         // rigidBody 객체에 RigidBody 값 대입
         rigidBody = GetComponent<Rigidbody>();
-        // 초기 위치값을 MonoBehaviour 클래스가 초기화 될 때의 위치값을 대입
-        startPosition = transform.position;
-        // bulletDamage 변수에 Constant.DAMAGE(10f) 값 대입
-        bulletDamage = Constant.DAMAGE;
     }
 
     private void Start()
     {
+        // 초기 위치값을 MonoBehaviour 클래스가 초기화 될 때의 위치값을 대입
+        startPosition = transform.position;
+        // bulletDamage 변수에 Constant.DAMAGE(10f) 값 대입
+        bulletDamage = Constant.DAMAGE;
         // 거리가 멀어지면 삭제시키는 코루틴 시작
         StartCoroutine(DeleteByDistance());
     }
@@ -76,12 +76,13 @@ public class Bullet : MonoBehaviour
 
     private void BulletMove()
     {
-        // rigidBody 컴포넌트가 null 이 아니라면
-        if (rigidBody != null)
-        {
-            // Bullet 컴포넌트의 앞쪽 방향을 향해 Constant.BULLET_POWER(1f) 만큼 곱해서 힘을 가해줌
-            rigidBody.AddForce(transform.forward * Constant.BULLET_POWER);
-        }
+        // rigidBody 컴포넌트가 null 이라면
+        if (rigidBody == null)
+            return; // 리턴
+     
+        // Bullet 컴포넌트의 앞쪽 방향을 향해 Constant.BULLET_POWER(1f) 만큼 곱해서 힘을 가해줌
+        rigidBody.AddForce(transform.forward * Constant.BULLET_POWER);
+        
 
     }
 }

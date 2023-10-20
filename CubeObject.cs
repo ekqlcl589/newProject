@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -16,6 +17,10 @@ public class CubeObject : MonoBehaviour
     // 총알 발사 기능을 관리하는 컴포넌트 
     private BulletShooter bulletShooter;
 
+    // 코루틴이 실행 중인지 확인 하기 위한 변수
+    private Coroutine CreateBulletCoroutin;
+    private Coroutine CheckTargetCoroutin;
+
     private void Awake()
     {
         // 체력 기능 컴포넌트 가져오기
@@ -30,9 +35,9 @@ public class CubeObject : MonoBehaviour
     void Start()
     {
         // 총알 발사 코루틴 시작
-        StartCoroutine(CreateBullet());
+        CreateBulletCoroutin = StartCoroutine(CreateBullet());
         // 잠재적 타겟 지정 코루틴 시작
-        StartCoroutine(CheckTarget());
+        CheckTargetCoroutin = StartCoroutine(CheckTarget());
     }
 
     // Update is called once per frame
@@ -49,17 +54,18 @@ public class CubeObject : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        // 충돌한 오브젝트의 총알 컴포넌트가 Bullet 클래스의 객체로 대입
+        // 충돌한 오브젝트를 Bullet 클래스의 객체로 대입
         Bullet bullet = collision.gameObject.GetComponent<Bullet>();
         // 대입한 객체가 null 이 아니거나 체력이 null 이 아니라면
         if (bullet != null && health != null)
             // 총알의 공격력 만큼 체력 깎음
             health.SetMinusHp -= bullet.BulletDamage;
+
     }
 
     private void OnTriggerEnter(Collider other) // 트리거에 들어 왔으면 큐 에 저장만 한다
     {
-        // 트리거와 충돌한 체력 관리 기능을 Health 객체에 대입
+        // 트리거와 충돌한 오브젝트를 Health 객체에 대입
         Health damageableTarget = other.GetComponent<Health>();
         // 대입한 Health 객체가 null 이 아니라면
         if (damageableTarget != null)
@@ -72,6 +78,7 @@ public class CubeObject : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         // 트리거 영역에서 타겟이 나갈 때 처리
+        // 트리거와 충돌한 오브젝트를 Health 객체에 대입
         Health exitTarget = other.GetComponent<Health>();
 
         // 트리거에서 나가는 타겟이 null 이 아니라면
@@ -96,7 +103,7 @@ public class CubeObject : MonoBehaviour
             // 기존 큐를 새로운 큐로 대체
             potentialTargets = newQueue;
 
-            // 만약 현재 타겟이 나가는 타겟이면 현재 타겟도 null로 설정
+            // 만약 현재 타겟이 나가는 타겟이면 현재 타겟도 null 로 설정
             if (exitTarget.gameObject == target)
             {
                 target = null;
@@ -110,14 +117,13 @@ public class CubeObject : MonoBehaviour
         while (true) 
         {
             // 타겟이 null 이고, 잠재적 타겟들을 관리하는 컨테이너의 저장된 인자가 0개 이상이라면
-            if (target == null && potentialTargets.Count > Constant.ZERO_COUNT)
+            if (target == null && potentialTargets.Count() > Constant.ZERO_COUNT)
             {
-                // 타겟을 컨테이너의 처음 들어간 인자의 오브젝트 정보를 대입
-                target = potentialTargets.Dequeue().gameObject;
-                // 만약 타겟이 null 이라면
-                if(target == null)
-                    // 코루틴 정지 
-                    yield break;
+                // 큐의 인자가 null 이 아니고 현재 타겟이 큐의 인자와 같지 않다면
+                if (potentialTargets.Dequeue().gameObject != null && potentialTargets.Dequeue().gameObject != target)
+                // 타겟에 큐에 들어간 첫 번째 인자의 오브젝트 정보를 대입
+                    target = potentialTargets.Dequeue().gameObject;
+
 
             }
             // Constant.WAIT_FOR_ONESECOND(1초) 만큼 정지 
@@ -134,8 +140,8 @@ public class CubeObject : MonoBehaviour
             // 만약 타겟이 null 이 아니라면
             if (target != null)
             {
-                // 총알 발사 컴포넌트의 CreateBullet 함수 실행
-                bulletShooter.CreateBullet1();
+                // 총알 발사 컴포넌트의 Shot 함수 실행
+                bulletShooter.Shot();
             }
             // Constant.BULLET_ATTACK_DELAY(2초) 만큼 정지
             yield return new WaitForSeconds(Constant.BULLET_ATTACK_DELAY);
@@ -162,13 +168,16 @@ public class CubeObject : MonoBehaviour
         }
     }
 
-    // CubeObject 가 삭제되면 
     private void OnDestroy()
     {
+        // 코루틴 함수가 실행 중인지 확인 하고 
+        if (CreateBulletCoroutin != null)
         // CreateBullet 코루틴 종료
-        StopCoroutine(CreateBullet());
+            StopCoroutine(CreateBullet());
+
+        if(CheckTargetCoroutin != null)
         // CheckTarget 코루틴 종료
-        StopCoroutine(CheckTarget());
+            StopCoroutine(CheckTarget());
 
     }
 }
