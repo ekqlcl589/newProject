@@ -10,7 +10,7 @@ public class Bullet : MonoBehaviour
     // Bullet 객체의 초기 위치값을 저장한 변수
     private Vector3 startPosition;
 
-    // 코루틴 종료 시 코루틴이 실행 중인지를 확인 하기 위한 변수
+    // 코루틴이 종료 되어야 할 때 동작하지 않는 코루틴 까지 스탑코루틴을 걸어서 "불필요한 동작을 줄이기 위해" Coroutine 을 반환하는 객체들을 만듦
     private Coroutine DeleteByDistanceCoroutine;
 
     // Bullet 의 데미지를 저장할 변수
@@ -64,9 +64,9 @@ public class Bullet : MonoBehaviour
         // rigidBody 컴포넌트가 null 이 아니라면
         while(rigidBody != null) 
         {
-            // startPosition 값에 rigidBody.position의 위치 값을 빼고 제곱한 값을 distanceToStartPosition 값에 대입
+            // 날아간 거리를 구하기 위해 Vector3.Distance 함수를 통해 값을 구해줌 
             float distanceToStartPosition = Vector3.Distance(startPosition, rigidBody.position);
-            // 만약 distanceToStartPosition 값이 Constant.BULLET_DELETE_DISTANCE(15f) 보다 크다면
+            // 만약 distanceToStartPosition 값이 Constant.BULLET_DELETE_DISTANCE(15f) 보다 크다면 삭제 시키는 조건
             if (distanceToStartPosition > Constant.BULLET_DELETE_DISTANCE)
             {
                 // 오브젝트를 삭제 시키는 함수 실행
@@ -74,7 +74,8 @@ public class Bullet : MonoBehaviour
                 // 코루틴 멈춤
                 yield break;
             }
-            // Constant.BULLET_DELETE_TIME(3f) 만큼 멈춤
+            // 계속 거리를 비교하는 것이 아니라 코루틴으로 Constant.BULLET_DELETE_TIME(3f) 만큼 멈춘 후 다시 계산
+            // 즉, 3초 마다 한번씩 계산
             yield return new WaitForSeconds(Constant.BULLET_DELETE_TIME);
         }
     }
@@ -84,8 +85,8 @@ public class Bullet : MonoBehaviour
         // rigidBody 컴포넌트가 null 이라면
         if (rigidBody == null)
             return; // 리턴
-     
-        // Bullet 컴포넌트의 앞쪽 방향을 향해 Constant.BULLET_POWER(1f) 만큼 곱해서 힘을 가해줌
+
+        // rigidBody가 null 이 아니라면 bullet은 앞으로 날아가기만 하면 되기 때문에 AddForce로 힘을 가해줌
         rigidBody.AddForce(transform.forward * Constant.BULLET_POWER);
         
 

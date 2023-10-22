@@ -81,28 +81,30 @@ public class CubeObject : MonoBehaviour
     }
 
     // 이 함수의 목적 자체는 트리거를 탈출한 오브젝트를 큐에서 제거 하기 위한 목적, target = null 로 만들기는 하지만 target = null 이 목적이 아님
+    // 새로운 큐를 할당 함으로써 기존 데이터를 지키면서 새로운 큐를 만들고 필요한 항목만 복사하면 기존 큐를 동시 수정하는 문제를 피할 수 있어서 새로운 큐를 만듦
     private void OnTriggerExit(Collider other)
     {
         Health exitTarget = other.GetComponent<Health>();
 
         if (exitTarget != null)
         {
+            // 원하는 데이터를 필터링할 새로운 큐의 생성해서 기존 큐의 데이터를 변경하지 않고,
+            // 큐의 데이터 구조를 유지하기 위해 새로운 큐 할당
             Queue<Health> newQueue = new Queue<Health>();
 
-            // 기존 큐를 순회하면서 원하는 타겟은 건너 뜀
+            // 기존 큐를 순회하면서 제거하려는 항목을 필터링
             while (potentialTargets.Count > Constant.ZERO_COUNT)
             {
-                // 새로운 타겟에 기존 큐의 마지막 인자를 대입
+                // 타겟이 트리거를 빠져나가는 대상이 아니면 새 큐에 추가
                 Health target = potentialTargets.Dequeue();
-                // 새로운 타겟이 트리거 밖으로 나가는 타겟과 다르다면
+              
                 if (target != exitTarget)
                 {
                     newQueue.Enqueue(target);
-
                 }
             }
-            
-            // 큐 갱신
+
+            // 새로운 필터링된 큐로 원래 큐 갱신
             potentialTargets = newQueue;
 
             if (exitTarget.gameObject == target)
