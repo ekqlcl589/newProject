@@ -7,13 +7,17 @@ using UnityEngine.UIElements;
 
 public class Movement : MonoBehaviour
 {
-    //지정된 타겟이 있으면 타겟을 향해 움직이는 기능
+    // Movement 컴포넌트의 기능은 Movement를 소유한 객체에서 target이 있다 없다를 판별해 있다면 MoveToTarget,
+    // 없다면 RandomMove 함수를 호출하는 것
     public void MoveToTarget(GameObject target)
     {
+        // target과 나(Movement를 보유한 객체)가 서로를 향해 이동하기 위해 방향벡터를 구하고 
+        // 구해진 방향벡터를 기반으로 회전하며 특정 거리 보다 크다면 이동 시키는 목적의 함수 
+
         // target 의 위치와 Movement 컴포넌트를 가지고 있는 객체의 위치를 빼서 방향 벡터를 구해줌
         Vector3 direction = target.transform.position - transform.position;
 
-        // 방향 벡터의 y 값은 Constant.ZERO_POINT(0) 으로 고정
+        // 바닥에 붙어 있지만 y 값이 +,-로 튀면 안 되기 때문에 벡터의 y 값은 Constant.ZERO_POINT(0) 으로 고정
         direction.y = Constant.ZERO_POINT;
 
         // 위치 벡터를 정규화 한 값을 쿼터니언 회전 각도를 구하는 함수로 구해서 
@@ -36,15 +40,20 @@ public class Movement : MonoBehaviour
     
     public void RandomMove()
     {
-        // Random 클래스의 반경 1을 가지는 구의 임의의 지점에 Constant.INSIDEUNITSPHERE(5)를 곱해서 5의 반경을 갖는 임의의 벡터를 구해줌
+        // target이 존재하지 않는다면, 랜덤한 방향으로 움직이는 목적의 함수 
+
+        // 랜덤한 움직임을 위해 구 안의 임의의 지점을 반환하는 Random.insideUnitSphere 로 좌표를 구하고
         Vector3 randomDirection = Random.insideUnitSphere * Constant.INSIDEUNITSPHERE;
         // y 값은 Constant.ZERO_POINT(0) 으로 고정
         randomDirection.y = Constant.ZERO_POINT;
 
-        // randomForce float 변수에 1 에서 4 까지의 임의의 값 대입
+        // 호출될 때마다 랜덤한 움직임의 힘(Force)을 줘서 일정한 움직임이 아닌 더 랜덤한 움직임을 위해
+        // Random.Range 함수를 통해 랜덤한 힘을 구해줌 
         float randomForce = Random.Range(Constant.MOVE_SPEED, Constant.FIND_TARGET);
-        // randomDirection 벡터의 정규화 값과 randomForce, 마지막 프레임에서 현재 프레임까지의 시간값을 곱해서 움직일 방향을 결정할 move 변수에 대입
+
+        // 랜덤 좌표와 랜덤 힘, 시간값을 통해 랜덤한 움직임 구현
         Vector3 move = randomDirection.normalized * randomForce * Time.deltaTime;
+
         // move 변수의 값을 Movement 를 소유한 객체의 위치값에 더한 후 그 결과를 객체의 위치값에 대입
         transform.position += move;
         

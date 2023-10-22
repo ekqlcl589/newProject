@@ -14,7 +14,8 @@ public class BulletShooter : MonoBehaviour
 
     public void Shot()
     {
-        // Bullet 의 객체에 원본 프리팹과 초기 위치값, 초기 회전값을 가지는 사본 생성
+        // BulletShooter 의 목적은 원본으로 만들어 둔 Bullet의 Prefab을 통해 사본을 생성하는 역할을 하기 때문에 
+        // 다른 조건 없이 shot 함수를 통해 다른 조건 없이 사본을 생성하게 설계 
         Bullet bullet = Instantiate(bulletPrefab, bulletPoint.position, bulletPoint.rotation);
     }
 
