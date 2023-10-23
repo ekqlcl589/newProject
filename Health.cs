@@ -21,7 +21,6 @@ public class Health : MonoBehaviour
         // 현재 체력 반환
         get { return currentHp; }
         set 
-
         {
             // 체력은 항상 0 보다 커야 하므로 조건 설정
             if (currentHp > Constant.DIE_HP)
@@ -29,7 +28,7 @@ public class Health : MonoBehaviour
                 // 현재 체력은 setter 로 받아오는 체력으로 대입
                 currentHp = value;
 
-                // 현재 체력이 0보다 크다가 setter를 통해 데미지를 받아서 0 이하가 되면 죽는 조건을 설정
+                // 현재 체력이 0보다 크다가 setter 를 통해 데미지를 받아서 0 이하가 되면 죽는 조건을 설정
                 if (currentHp <= Constant.DIE_HP)
                 {
                     // 현재 체력은 Constant.DIE_HP(0) 으로 대입
