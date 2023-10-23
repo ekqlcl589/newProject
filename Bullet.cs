@@ -49,15 +49,24 @@ public class Bullet : MonoBehaviour
         Delete();
     }
 
-    // 3초에 한 번씩 bullet 이 날아간 거리를 계산하기 위한 코드 
+    private void Delete()
+    {
+        // DeleteByDistanceCoroutine이 실행중이라면 코루틴 종료
+        if (DeleteByDistanceCoroutine != null)
+            StopCoroutine(DeleteByDistance());
+        // Bullet 객체 삭제 
+        Destroy(gameObject);
+    }
+
+    // 첫 발사된 위치와 날아가는 Bullet 의 거리를 비교하여 거리가 멀어진다면 Bullet 을 삭제시키고, 코루틴을 멈추기 위한 코드   
     IEnumerator DeleteByDistance()
     {
-        // rigidBody 컴포넌트가 null 이 아닌 상태에서만 코루틴이 실행되어야 함
+        // rigidBody 컴포넌트가 null 이 아니라면
         while(rigidBody != null) 
         {
             // 날아간 거리를 구하기 위해 Vector3.Distance 함수를 통해 값을 구해줌 
             float distanceToStartPosition = Vector3.Distance(startPosition, rigidBody.position);
-            // 계산된 거리가 Constant.BULLET_DELETE_DISTANCE(15f) 보다 크다면 삭제 시키는 조건
+            // 만약 distanceToStartPosition 값이 Constant.BULLET_DELETE_DISTANCE(15f) 보다 크다면 삭제 시키는 조건
             if (distanceToStartPosition > Constant.BULLET_DELETE_DISTANCE)
             {
                 // 오브젝트를 삭제 시키는 함수 실행
@@ -77,17 +86,9 @@ public class Bullet : MonoBehaviour
         if (rigidBody == null)
             return; // 리턴
 
-        // rigidBody가 null 이 아니라면 bullet 은 앞으로 날아가기만 하면 되기 때문에 AddForce로 힘을 가해줌
+        // rigidBody가 null 이 아니라면 bullet은 앞으로 날아가기만 하면 되기 때문에 AddForce로 힘을 가해줌
         rigidBody.AddForce(transform.forward * Constant.BULLET_POWER);
         
 
-    }
-    private void Delete()
-    {
-        // Delete()함수가 호출될 때 DeleteByDistanceCoroutine이 실행중이라면 코루틴 종료
-        if (DeleteByDistanceCoroutine != null)
-            StopCoroutine(DeleteByDistance());
-        // Bullet 객체 삭제 
-        Destroy(gameObject);
     }
 }
