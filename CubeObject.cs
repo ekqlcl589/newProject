@@ -18,7 +18,8 @@ public class CubeObject : MonoBehaviour
     private BulletShooter bulletShooter;
 
     // 트리거에 접촉하는 순서대로 (체력을 가진)타겟을 지정 해주기 위한 list 사용
-    private List<Health> potentialTargets = new List<Health>();
+    // capacity 의 크기를 미리 지정해서 capacity > count 상황에서 재할당 후 복사 하는 것을 방지하기 위해 capacity 를 미리 설정 (현재 최대 타겟이 3마리)
+    private List<Health> potentialTargets = new List<Health>(Constant.TARGETS_MAX_COUNT);
 
     // 코루틴이 종료 되어야 할 때 동작하지 않는 코루틴 까지 스탑코루틴을 걸어서 "불필요한 동작을 줄이기 위해" Coroutine 을 반환하는 객체들을 만듦
     private Coroutine CreateBulletCoroutin;
@@ -45,7 +46,7 @@ public class CubeObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     void FixedUpdate()
@@ -78,6 +79,9 @@ public class CubeObject : MonoBehaviour
         {
             // 잠재적 타겟들을 관리하는 컨테이너(리스트)에 저장
             potentialTargets.Add(damageableTarget);
+            Debug.Log(potentialTargets.Capacity);
+            Debug.Log(potentialTargets.Count);
+
         }
     }
 
