@@ -17,7 +17,7 @@ public class CubeObject : MonoBehaviour
     private Movement movement;
     private BulletShooter bulletShooter;
 
-    // 트리거에 접촉하는 순서대로 (체력을 가진)타겟을 지정 해주고, 데이터의 추가/삭제가 편리한 리스트 컨테이너 사용
+    // 트리거에 접촉하는 순서대로 (체력을 가진)타겟을 지정 해주기 위한 list 사용
     private List<Health> potentialTargets = new List<Health>();
 
     // 코루틴이 종료 되어야 할 때 동작하지 않는 코루틴 까지 스탑코루틴을 걸어서 "불필요한 동작을 줄이기 위해" Coroutine 을 반환하는 객체들을 만듦
