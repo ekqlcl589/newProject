@@ -66,70 +66,57 @@ public class CubeObject : MonoBehaviour
             health.SetMinusHp -= bullet.BulletDamage;
     }
 
-    // OnTriggerEnter는 트리거 "접촉이 일어나는 순간에만 한 번만 호출"이 되기 때문에 타겟 지정은 다른 곳에서 하고 enter 에서는 큐에만 넣어준다
+    // OnTriggerEnter는 트리거 "접촉이 일어나는 순간에만 한 번만 호출"이 되기 때문에 타겟 지정은 다른 함수를 통해 지정하고 enter 에서는 리스트에만 추가한다
     // 여기서 타겟(target) 까지 지정해 버리면 트리거에 다른 잠재적 타겟들(CubeObject)가 들어오면 기존 타겟이 새로운 타겟으로 덮혀 버리기 때문
-    private void OnTriggerEnter(Collider other) // 트리거에 들어 왔으면 큐 에 저장만 한다
+    // 리스트에 등록될 때 중복 타겟이 들어가지 않게 하기 위해 Contains 로 같은 값이 들어가 있는지 중복 체크 
+    private void OnTriggerEnter(Collider other) 
     {
         // 트리거와 충돌한 오브젝트를 Health 객체에 대입
         Health damageableTarget = other.GetComponent<Health>();
-        // 대입한 Health 객체가 null 이 아니라면
-        if (damageableTarget != null)
+        // 대입한 Health 객체가 null 이 아니고 중복된 값이 아니라면 
+        if (damageableTarget != null && !potentialTargets.Contains(damageableTarget))
         {
-            // 잠재적 타겟들을 관리하는 컨테이너(큐)에 저장
-            potentialTargets.Enqueue(damageableTarget);
+            // 잠재적 타겟들을 관리하는 컨테이너(리스트)에 저장
+            potentialTargets.Add(damageableTarget);
         }
     }
 
-    // 이 함수의 목적 자체는 트리거를 탈출한 오브젝트를 큐에서 제거 하기 위한 목적, target = null 로 만들기는 하지만 target = null 이 목적이 아님
-    // 새로운 큐를 할당 함으로써 기존 데이터를 지키면서 새로운 큐를 만들고 필요한 항목만 복사하면 기존 큐를 동시 수정하는 문제를 피할 수 있어서 새로운 큐를 만듦
+    // Exit 에서는 빠져 나간 타겟을 리스트에서 제거 해주고 그 빠져 나간 타겟이 현재 타겟과 같다면 target 을 null 로 돌리는 작업
+    // exit 시 리스트만 제거를 해주고 혹시나 그 값이 현재 타겟과 같다면 target 을 null 로 만들어 주면 된다
     private void OnTriggerExit(Collider other)
     {
         Health exitTarget = other.GetComponent<Health>();
 
-        if (exitTarget != null)
+        // 리스트가 존재하고 exitTarget 이 리스트 안에 존재 한다면 리스트에서 삭제
+        if (potentialTargets.Count > Constant.ZERO_COUNT && exitTarget != null && potentialTargets.Contains(exitTarget))
         {
-            // 원하는 데이터를 필터링할 새로운 큐의 생성해서 기존 큐의 데이터를 변경하지 않고,
-            // 큐의 데이터 구조를 유지하기 위해 새로운 큐 할당
-            Queue<Health> newQueue = new Queue<Health>();
+            // 리스트를 사용하면 필요한 지점의 정보만 remove 가 가능해짐
+            potentialTargets.Remove(exitTarget);
 
-            // 기존 큐를 순회하면서 제거하려는 항목을 필터링
-            while (potentialTargets.Count > Constant.ZERO_COUNT)
-            {
-                // 타겟이 트리거를 빠져나가는 대상이 아니면 새 큐에 추가
-                Health target = potentialTargets.Dequeue();
-              
-                if (target != exitTarget)
-                {
-                    newQueue.Enqueue(target);
-                }
-            }
-
-            // 새로운 필터링된 큐로 원래 큐 갱신
-            potentialTargets = newQueue;
-
+            // 빠져나간 타겟이 현재 타겟과 동일 하다면 target 을 null 로 만들어 줘야 함
             if (exitTarget.gameObject == target)
             {
                 target = null;
             }
         }
+
     }
     // 타겟을 지정하는 행위를 행해야 하는데 Update 나 FixedUpdate 에서 계속 호출 하는 건 최적화 부분에서 매우 좋지 않기 때문에 
     // 주기적으로 호출할 수 있는 코루틴으로 함수를 설계
     // 이 함수는 타겟을 세팅 해주는 게 목적인 함수라서 이름 변경
     IEnumerator TargetSetting()
     {
-        // CheckTarget 함수는 오브젝트가 존재하는 한 계속 검사를 하긴 해야해서 while 을 true 로 주고 반복시킴 -> 종료는 OnDestroy 에서 종료
-        while (true)
+        // CheckTarget 함수는 오브젝트가 존재하는 한 계속 검사를 하긴 해야해서 gameObject(객체)가 null 이 아니라면 반복시킴 -> 종료는 OnDestroy 에서 종료
+        while (gameObject != null)
         {
-            // 큐에 들어간 인자를 타겟으로 잡아야 하므로 큐에 하나라도 인자값이 들어 있다면
-           if(potentialTargets.Count > Constant.ZERO_COUNT)
+            // 리스트에 들어간 인자를 타겟으로 잡아야 하므로 리스트에 하나라도 인자값이 들어 있다면
+            if (potentialTargets.Count > Constant.ZERO_COUNT && target == null)
             {
-                // 큐에 인자는 들어가 있지만 타겟이 이미 잡혀 있는 상태라면 타겟 지정을 해주지 않아도 됨
-                // 그리고 여기서 큐의 인자가 null 인지 판단 하지 않아도 됨 이미 TriggerEnter 에서 null 체크를 하고 큐에 넣어주기 때문
-                if (target == null)
-                {       
-                    target = potentialTargets.Dequeue().gameObject;
-                }
+                // target 이 null 일 때만 타겟을 리스트에 들어가 있는 첫 번째 데이터로 지정해 주고 지정된 리스트를 삭제 해주면 타겟이 죽었을 때에 대한 관리를 추가로 해주지 않아도 됨
+                // 여러 개의 타겟을 동시에 설정 하는게 아니라 들어온 순서 대로 하나씩 타겟으로 지정할 것이기 때문에 리스트에 들어가 있는 첫 번째 인자를 타겟으로 설정
+                target = potentialTargets[0].gameObject;
+                // 리스트에 들어가 있던 첫 번째 데이터가 target 으로 지정이 되면 저장된 0 번째 배열을 리스트에서 제거해 줘서 리스트에 중복 제거
+                potentialTargets.RemoveAt(0);
             }
             yield return new WaitForSeconds(Constant.WAIT_FOR_ONESECOND);
         }
@@ -164,7 +151,6 @@ public class CubeObject : MonoBehaviour
                 movement.MoveToTarget(target);
 
             }
-            // 타겟이 null 이라면
             else
             {
                 // 랜덤한 움직임을 구현한 함수 실행
@@ -175,13 +161,10 @@ public class CubeObject : MonoBehaviour
 
     private void OnDestroy()
     {
-        // 코루틴 함수가 실행 중인지 확인 하고 
+        // 코루틴 함수가 실행 중인지 확인 하고, 실행중이지 않은 함수를 종료 하는 비효율 적인 행동을 안 하기 위해 null 체크 후 종료
         if (CreateBulletCoroutin != null)
-        // CreateBullet 코루틴 종료
             StopCoroutine(CreateBullet());
-        // 실행중이지 않은 함수를 종료 하는 비효율 적인 행동을 안 하기 위해 null 체크
         if(TargetSettingCoroutin != null)
-        // CheckTarget 코루틴 종료
             StopCoroutine(TargetSetting());
 
     }
