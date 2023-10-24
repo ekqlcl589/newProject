@@ -7,12 +7,16 @@ using UnityEngine.UIElements;
 
 public class Movement : MonoBehaviour
 {
-    // Movement 컴포넌트의 기능은 Movement를 소유한 객체에서 target이 있다 없다를 판별해 있다면 MoveToTarget,
+    // Movement 컴포넌트의 기능은 Movement 를 소유한 객체에서 target 이 있다 없다를 판별해 있다면 MoveToTarget,
     // 없다면 RandomMove 함수를 호출하는 것
     public void MoveToTarget(GameObject target)
     {
-        // target과 나(Movement를 보유한 객체)가 서로를 향해 이동하기 위해 방향벡터를 구하고 
+        // target 과 나(Movement 를 보유한 객체)가 서로를 향해 이동하기 위해 방향벡터를 구하고 
         // 구해진 방향벡터를 기반으로 회전하며 특정 거리 보다 크다면 이동 시키는 목적의 함수 
+
+        // 타겟이 없다면 함수를 수행할 필요가 없음
+        if (target == null || transform == null)
+            return;
 
         // target 의 위치와 Movement 컴포넌트를 가지고 있는 객체의 위치를 빼서 방향 벡터를 구해줌
         Vector3 direction = target.transform.position - transform.position;
@@ -35,12 +39,15 @@ public class Movement : MonoBehaviour
             Vector3 move = direction.normalized * Constant.MOVE_SPEED * Time.deltaTime;
             // move 변수의 값을 Movement 를 소유한 객체의 위치값에 더한 후 그 결과를 객체의 위치값에 대입 
             transform.position += move;
+            
         }
     }
     
     public void RandomMove()
     {
-        // target이 존재하지 않는다면, 랜덤한 방향으로 움직이는 목적의 함수 
+        if (transform == null)
+            return;
+        // target 이 존재하지 않는다면, 랜덤한 방향으로 움직이는 목적의 함수 
 
         // 랜덤한 움직임을 위해 구 안의 임의의 지점을 반환하는 Random.insideUnitSphere 로 좌표를 구하고
         Vector3 randomDirection = Random.insideUnitSphere * Constant.INSIDEUNITSPHERE;

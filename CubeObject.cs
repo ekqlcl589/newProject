@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Numerics;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -15,9 +17,8 @@ public class CubeObject : MonoBehaviour
     private Movement movement;
     // 총알 발사 기능을 관리하는 컴포넌트 
     private BulletShooter bulletShooter;
-
-    //트리거에 "접촉하는 순서대로" (체력을 가진)타겟을 지정 해주기 위해 선입선출(<-ㅁㅁㅁ<-) 형태를 가진 큐(대기열)로 컨테이너를 만듦
-    private Queue<Health> potentialTargets = new Queue<Health>();
+    // 트리거에 접촉하는 순서대로 (체력을 가진)타겟을 지정 해주고, 데이터의 추가/삭제가 편리한 리스트 컨테이너 사용
+    private List<Health> potentialTargets = new List<Health>();
 
     // 코루틴이 종료 되어야 할 때 동작하지 않는 코루틴 까지 스탑코루틴을 걸어서 "불필요한 동작을 줄이기 위해" Coroutine 을 반환하는 객체들을 만듦
     private Coroutine CreateBulletCoroutin;
@@ -25,18 +26,17 @@ public class CubeObject : MonoBehaviour
 
     private void Awake()
     {
-        // 체력 기능 컴포넌트 가져오기
+        // 스크립트가 활성화 되면 Awake 함수에서 필요한 컴포넌트들 찾아오는 기능 수행
         health = GetComponent<Health>();
-        // 움직임 기능 컴포넌트 가져오기
+        
         movement = GetComponent<Movement>();
-        // 총알 발사 기능 컴포넌트 가져오기
+        
         bulletShooter = GetComponent<BulletShooter>();
-
     }
     // Start is called before the first frame update
     void Start()
     {
-        // CreateBulletCoroutin으로 코루틴 메서드가 동작(true)중 인지 아닌지(false) 구분하기 위해 
+        // CreateBulletCoroutin으로 코루틴 메서드가 동작(true)중 인지 아닌지(false) 구분하기 위해 값 대입
         CreateBulletCoroutin = StartCoroutine(CreateBullet());
         TargetSettingCoroutin = StartCoroutine(TargetSetting());
     }
@@ -54,6 +54,7 @@ public class CubeObject : MonoBehaviour
         MoveFixedUpdate();
     }
 
+
     // 콜리전과 접촉하는 순간 딱 한번 체력이 깎여야 하기 때문에 Enter 에서 체력 관리
     private void OnCollisionEnter(Collision collision)
     {
@@ -63,7 +64,6 @@ public class CubeObject : MonoBehaviour
         if (bullet != null && health != null)
             // 총알의 공격력 만큼 체력 깎음
             health.SetMinusHp -= bullet.BulletDamage;
-
     }
 
     // OnTriggerEnter는 트리거 "접촉이 일어나는 순간에만 한 번만 호출"이 되기 때문에 타겟 지정은 다른 곳에서 하고 enter 에서는 큐에만 넣어준다
