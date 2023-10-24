@@ -30,8 +30,8 @@ public class BulletShooter : MonoBehaviour
 
     private Bullet CreateNewBulletPrefab()
     {
-        GameObject newBulletPrefab = new GameObject("BulletPrefab");
-        // 원하는 구성 요소를 newBulletPrefab에 추가
+        // 프리팹이 없다면 BulletPrefab을 찾아서 다시 생성
+        GameObject newBulletPrefab = new GameObject("BulletPrefab");        
 
         return newBulletPrefab.GetComponent<Bullet>();
     }
