@@ -11,12 +11,12 @@ public class CubeObject : MonoBehaviour
 {
     // 움직임, 공격 등을 지정할 오브젝트로 전역함수 target 을 만듦
     private GameObject target;
-    // 체력을 관리하는 컴포넌트
+
+    // CubeObject에 필요한 컴포넌트들 선언
     private Health health;
-    // 움직임 기능을 관리하는 컴포넌트
     private Movement movement;
-    // 총알 발사 기능을 관리하는 컴포넌트 
     private BulletShooter bulletShooter;
+
     // 트리거에 접촉하는 순서대로 (체력을 가진)타겟을 지정 해주고, 데이터의 추가/삭제가 편리한 리스트 컨테이너 사용
     private List<Health> potentialTargets = new List<Health>();
 
@@ -38,6 +38,7 @@ public class CubeObject : MonoBehaviour
     {
         // CreateBulletCoroutin으로 코루틴 메서드가 동작(true)중 인지 아닌지(false) 구분하기 위해 값 대입
         CreateBulletCoroutin = StartCoroutine(CreateBullet());
+
         TargetSettingCoroutin = StartCoroutine(TargetSetting());
     }
 
@@ -58,11 +59,10 @@ public class CubeObject : MonoBehaviour
     // 콜리전과 접촉하는 순간 딱 한번 체력이 깎여야 하기 때문에 Enter 에서 체력 관리
     private void OnCollisionEnter(Collision collision)
     {
-        // 충돌한 오브젝트가 Bullet 형인지 아닌지 판별하고, Bullet 형 이고 health 가 존재한다면 데미지를 주기 위해 ColligionEnter에서 구현
+        // 충돌한 오브젝트가 Bullet 형인지 아닌지 판별하고, health 가 존재한다면 bullet 의 damage 로 체력을 깎는다
         Bullet bullet = collision.gameObject.GetComponent<Bullet>();
-        // 대입한 객체가 null 이 아니거나 체력이 null 이 아니라면
+
         if (bullet != null && health != null)
-            // 총알의 공격력 만큼 체력 깎음
             health.SetMinusHp -= bullet.BulletDamage;
     }
 
@@ -103,7 +103,6 @@ public class CubeObject : MonoBehaviour
     }
     // 타겟을 지정하는 행위를 행해야 하는데 Update 나 FixedUpdate 에서 계속 호출 하는 건 최적화 부분에서 매우 좋지 않기 때문에 
     // 주기적으로 호출할 수 있는 코루틴으로 함수를 설계
-    // 이 함수는 타겟을 세팅 해주는 게 목적인 함수라서 이름 변경
     IEnumerator TargetSetting()
     {
         // CheckTarget 함수는 오브젝트가 존재하는 한 계속 검사를 하긴 해야해서 gameObject(객체)가 null 이 아니라면 반복시킴 -> 종료는 OnDestroy 에서 종료
@@ -147,13 +146,11 @@ public class CubeObject : MonoBehaviour
             // 타겟의 유무를 통해 랜덤한 움직임을 가질 지, target 을 향해 움직이는 행동을 할 지 결정하기 위해 if, else 로 함수 구분
             if(target != null) 
             {
-                // 타겟을 향해 움직이는 함수 실행(CubeObject에서 지정된 target 의 정보를 인자값으로 넘겨줌)
+                // CubeObject에서 지정된 target 의 정보를 인자값으로 넘겨줘서 target 을 설정 
                 movement.MoveToTarget(target);
-
             }
             else
             {
-                // 랜덤한 움직임을 구현한 함수 실행
                 movement.RandomMove();
             }
         }
@@ -164,8 +161,8 @@ public class CubeObject : MonoBehaviour
         // 코루틴 함수가 실행 중인지 확인 하고, 실행중이지 않은 함수를 종료 하는 비효율 적인 행동을 안 하기 위해 null 체크 후 종료
         if (CreateBulletCoroutin != null)
             StopCoroutine(CreateBullet());
+
         if(TargetSettingCoroutin != null)
             StopCoroutine(TargetSetting());
-
     }
 }
