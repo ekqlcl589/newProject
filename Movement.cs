@@ -15,7 +15,7 @@ public class Movement : MonoBehaviour
         // 구해진 방향벡터를 기반으로 회전하며 특정 거리 보다 크다면 이동 시키는 목적의 함수 
 
         // 타겟이 없다면 함수를 수행할 필요가 없음
-        if (target == null || transform == null)
+        if (target == null)
             return;
 
         // target 의 위치와 Movement 컴포넌트를 가지고 있는 객체의 위치를 빼서 방향 벡터를 구해줌
