@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public class BulletShooter : MonoBehaviour
@@ -31,7 +32,7 @@ public class BulletShooter : MonoBehaviour
     private Bullet CreateNewBulletPrefab()
     {
         // 프리팹이 없다면 BulletPrefab을 찾아서 다시 생성
-        GameObject newBulletPrefab = new GameObject("BulletPrefab");        
+        GameObject newBulletPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefab/BulletPrefab.prefab", typeof(GameObject));
 
         return newBulletPrefab.GetComponent<Bullet>();
     }

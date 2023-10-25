@@ -79,9 +79,6 @@ public class CubeObject : MonoBehaviour
         {
             // 잠재적 타겟들을 관리하는 컨테이너(리스트)에 저장
             potentialTargets.Add(damageableTarget);
-            Debug.Log(potentialTargets.Capacity);
-            Debug.Log(potentialTargets.Count);
-
         }
     }
 
